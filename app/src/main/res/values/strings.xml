@@ -5,4 +5,13 @@
     <string name="lbl_user_name">User Name</string>
     <string name="lbl_password">Password</string>
     <string name="lbl_sign_in_button">Sign in</string>
+
+    <string name="title_activity_sign_up_take_me">Sign Up</string>
+    <string name="lbl_confirm_password">Confirm Password</string>
+    <string name="lbl_first_name">First Name</string>
+    <string name="lbl_last_name">Last Name</string>
+    <string name="lbl_sign_up_take_me">Sign Up for TakeMe</string>
+    <string name="lbl_sign_up_button">Sign Up</string>
+    <string name="lbl_email_sign_up">Your Email</string>
+
 </resources>

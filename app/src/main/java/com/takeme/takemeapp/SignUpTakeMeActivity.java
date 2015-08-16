@@ -1,26 +1,22 @@
 package com.takeme.takemeapp;
 
 import android.app.Activity;
-import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.method.PasswordTransformationMethod;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.EditText;
 
-public class TakeMeActivity extends Activity {
+public class SignUpTakeMeActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_take_me);
-
+        setContentView(R.layout.activity_sign_up_take_me);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_take_me, menu);
+        getMenuInflater().inflate(R.menu.menu_sign_up_take_me, menu);
         return true;
     }
 
