@@ -1,9 +1,11 @@
 package com.takeme.takemeapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
 public class SignUpTakeMeActivity extends Activity {
 
@@ -33,5 +35,11 @@ public class SignUpTakeMeActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onSignUp(View view)
+    {
+        Intent intent = new Intent(this, MainTakeMeActivity.class);
+        startActivity(intent);
     }
 }

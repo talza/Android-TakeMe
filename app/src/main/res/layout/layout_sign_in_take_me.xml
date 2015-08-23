@@ -30,7 +30,9 @@
             android:text="@string/lbl_sign_in_button"
             android:id="@+id/btnSignIn"
             android:clickable="true"
-            android:textAllCaps="false" />
+            android:textAllCaps="false"
+            android:enabled="true"
+            android:onClick="onSignIn" />
 
         <Button
             android:layout_width="fill_parent"
@@ -40,7 +42,8 @@
             android:enabled="true"
             android:elegantTextHeight="true"
             android:textAllCaps="false"
-            android:layout_marginTop="300dp" />
+            android:layout_marginTop="300dp"
+            android:onClick="onSignUp" />
     </LinearLayout>
 
 </RelativeLayout>

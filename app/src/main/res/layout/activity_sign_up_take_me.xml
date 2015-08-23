@@ -58,6 +58,7 @@
             android:layout_height="wrap_content"
             android:text="@string/lbl_sign_up_button"
             android:id="@+id/btnSignUp"
-            android:textAllCaps="false"/>
+            android:textAllCaps="false"
+            android:onClick="onSignUp" />
     </LinearLayout>
 </RelativeLayout>

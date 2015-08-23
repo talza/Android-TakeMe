@@ -1,16 +1,18 @@
 package com.takeme.takemeapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 
-public class LoginTakeMeActivity extends Activity {
+public class SignInTakeMeActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.layout_login_take_me);
+        setContentView(R.layout.layout_sign_in_take_me);
 
     }
 
@@ -34,5 +36,17 @@ public class LoginTakeMeActivity extends Activity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    public void onSignIn(View view)
+    {
+        Intent intent = new Intent(this, MainTakeMeActivity.class);
+        startActivity(intent);
+    }
+
+    public void onSignUp(View view)
+    {
+        Intent intent = new Intent(this, SignUpTakeMeActivity.class);
+        startActivity(intent);
     }
 }
