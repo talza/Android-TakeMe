@@ -4,7 +4,10 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.LayoutInflater;
@@ -14,7 +17,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 public class MainTakeMeActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks,
+        PetsListFragment.OnFragmentInteractionListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -44,28 +48,58 @@ public class MainTakeMeActivity extends Activity
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
+
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction()
-                .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-                .commit();
+        Fragment fragment = null;
+
+        switch(position) {
+            default:
+            case 0:
+                mTitle = getString(R.string.title_main_view);
+                fragment = PetsListFragment.newInstance(null,null);
+                break;
+            case 1:
+                mTitle = getString(R.string.title_my_pets_view);
+                fragment = PetsListFragment.newInstance(null,null);
+              //  fragment = new MyPetsFragment();
+                break;
+            case 2:
+                mTitle = getString(R.string.title_wish_list_view);
+                fragment = PetsListFragment.newInstance(null,null);
+           //     fragment = new WishListFregment();
+                break;
+            case 3:
+                signOut();
+                return;
+
+        }
+
+        // Create new  transaction
+        FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+        // Replace whatever is in the fragment_container view with this fragment,
+        // and add the transaction to the back stack
+        transaction.replace(R.id.container, fragment);
+        transaction.addToBackStack(null);
+
+        // Commit the transaction
+        transaction.commit();
     }
 
     public void onSectionAttached(int number) {
         switch (number) {
-            case 1:
+            case 0:
                 mTitle = getString(R.string.title_main_view);
                 break;
-            case 2:
+            case 1:
                 mTitle = getString(R.string.title_my_pets_view);
                 break;
-            case 3:
+            case 2:
                 mTitle = getString(R.string.title_wish_list_view);
                 break;
-            case 4:
+            case 3:
                 mTitle = getString(R.string.title_sign_out);
-                Intent intent = new Intent(this, SignInTakeMeActivity.class);
-                startActivity(intent);
                 break;
         }
     }
@@ -77,6 +111,7 @@ public class MainTakeMeActivity extends Activity
         }
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
+
     }
 
 
@@ -108,44 +143,57 @@ public class MainTakeMeActivity extends Activity
         return super.onOptionsItemSelected(item);
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
-     */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    @Override
+    public void onFragmentInteraction(Uri uri) {
 
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
-            return fragment;
-        }
-
-        public PlaceholderFragment() {
-        }
-
-        @Override
-        public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main_take_me, container, false);
-            return rootView;
-        }
-
-        @Override
-        public void onAttach(Activity activity) {
-            super.onAttach(activity);
-            ((MainTakeMeActivity) activity).onSectionAttached(
-                    getArguments().getInt(ARG_SECTION_NUMBER));
-        }
     }
+
+//    /**
+//     * A placeholder fragment containing a simple view.
+//     */
+//    public static class PlaceholderFragment extends Fragment {
+//        /**
+//         * The fragment argument representing the section number for this
+//         * fragment.
+//         */
+//        private static final String ARG_SECTION_NUMBER = "section_number";
+//
+//        /**
+//         * Returns a new instance of this fragment for the given section
+//         * number.
+//         */
+//        public static PlaceholderFragment newInstance(int sectionNumber) {
+//            PlaceholderFragment fragment = new PlaceholderFragment();
+//            Bundle args = new Bundle();
+//            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+//            fragment.setArguments(args);
+//            return fragment;
+//        }
+//
+//        public PlaceholderFragment() {
+//        }
+//
+//        @Override
+//        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+//                                 Bundle savedInstanceState) {
+//            View rootView = inflater.inflate(R.layout.fragment_main_take_me, container, false);
+//            return rootView;
+//        }
+//
+//        @Override
+//        public void onAttach(Activity activity) {
+//            super.onAttach(activity);
+//            ((MainTakeMeActivity) activity).onSectionAttached(
+//                    getArguments().getInt(ARG_SECTION_NUMBER));
+//        }
+//    }
+
+    private void signOut()
+    {
+        Intent intentToSignIn = new Intent(this, SignInTakeMeActivity.class);
+        startActivity(intentToSignIn);
+        finish();
+    }
+
 
 }

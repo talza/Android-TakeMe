@@ -14,8 +14,8 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
-            android:id="@+id/etUserName"
-            android:hint="@string/lbl_user_name" />
+            android:id="@+id/etEmail"
+            android:hint="@string/lbl_email_address" />
 
         <EditText
             android:layout_width="fill_parent"

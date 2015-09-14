@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent" android:descendantFocusability="blocksDescendants">
+
+    <ImageView
+        android:id="@+id/imgPetImage"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_margin="5dp"
+        android:contentDescription="icon"
+        android:src="@mipmap/ic_launcher" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:nestedScrollingEnabled="false">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/tvPetName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@android:string/unknownName"/>
+
+                <TextView
+                    android:id="@+id/tvPetShortDesc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:text="@android:string/unknownName"/>
+
+            </LinearLayout>
+
+            <ImageButton android:id="@+id/ibWishList"
+                android:src="@android:drawable/btn_star_big_off"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:layout_centerVertical="true" android:layout_alignParentRight="true"
+                android:onClick=""/>
+
+        </RelativeLayout>/>
+
+    </LinearLayout>
+
+</LinearLayout>

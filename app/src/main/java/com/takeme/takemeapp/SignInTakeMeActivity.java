@@ -2,10 +2,14 @@ package com.takeme.takemeapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
 
 public class SignInTakeMeActivity extends Activity {
 
@@ -40,13 +44,72 @@ public class SignInTakeMeActivity extends Activity {
 
     public void onSignIn(View view)
     {
-        Intent intent = new Intent(this, MainTakeMeActivity.class);
-        startActivity(intent);
+
+        EditText etEmail    = ((EditText)findViewById(R.id.etEmail));
+        EditText etPassword = ((EditText)findViewById(R.id.etPassword));
+
+        if (!isValidEmail(etEmail.getText().toString()) ||
+            TextUtils.isEmpty(etPassword.getText().toString()))
+        {
+            Toast.makeText(getApplicationContext(),
+                    getString(R.string.msg_invalid_email_password),Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        new AsyncTask<Void, Void, Intent>() {
+            @Override
+            protected Intent doInBackground(Void... params) {
+                //String authtoken = sServerAuthenticate.userSignIn(userName, userPass, mAuthTokenType);
+
+                Bundle bndlData = new Bundle();
+                // res.putExtra(AccountManager.KEY_ACCOUNT_NAME, userName);
+                //res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
+                // res.putExtra(AccountManager.KEY_AUTHTOKEN, authtoken);
+                // res.putExtra(PARAM_USER_PASS, userPass);
+                final Intent res = new Intent();
+                res.putExtras(bndlData);
+                return res;
+            }
+            @Override
+            protected void onPostExecute(Intent intent) {
+                finishSignIn(intent);
+            }
+        }.execute();
     }
 
     public void onSignUp(View view)
     {
         Intent intent = new Intent(this, SignUpTakeMeActivity.class);
         startActivity(intent);
+    }
+
+    private void finishSignIn(Intent intent) {
+//        String accountName = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+//        String accountPassword = intent.getStringExtra(PARAM_USER_PASS);
+//        final Account account = new Account(accountName, intent.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE));
+//        if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
+//            String authtoken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
+//            String authtokenType = mAuthTokenType;
+//            // Creating the account on the device and setting the auth token we got
+//            // (Not setting the auth token will cause another call to the server to authenticate the user)
+//            mAccountManager.addAccountExplicitly(account, accountPassword, null);
+//            mAccountManager.setAuthToken(account, authtokenType, authtoken);
+//        } else {
+//            mAccountManager.setPassword(account, accountPassword);
+//        }
+//        setAccountAuthenticatorResult(intent.getExtras());
+//        setResult(RESULT_OK, intent);
+        Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
+        intentToMain.putExtras(intent.getExtras());
+        startActivity(intentToMain);
+
+        finish();
+    }
+
+    private boolean isValidEmail(CharSequence target) {
+
+        return !TextUtils.isEmpty(target) &&
+                android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+
     }
 }
