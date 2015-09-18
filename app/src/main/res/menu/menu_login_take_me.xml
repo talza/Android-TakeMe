@@ -1,5 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.takeme.takemeapp.SignInTakeMeActivity">
+    tools:context="com.takeme.takemeapp.activities.SignInTakeMeActivity">
+
+    <item android:id="@+id/delete_pet_action"
+        android:icon="@android:drawable/ic_menu_delete"
+        android:showAsAction="always"
+        android:title=""
+        android:visible="false"/>
 
 </menu>

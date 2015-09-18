@@ -1,0 +1,234 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingLeft="0dp"
+    android:paddingRight="0dp"
+    android:paddingTop="0dp"
+    android:orientation="vertical"
+    android:background="#BEBEBE"
+    android:paddingBottom="0dp"
+    android:weightSum="10">
+
+
+    <LinearLayout
+        android:id="@+id/det_cont_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_weight="7">
+
+        <ImageView
+            android:id="@+id/det_petimage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/det_cont_gen_data"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_gravity="top"
+        android:layout_weight="3">
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+                <LinearLayout
+                    android:id="@+id/petDetailsCard"
+                    android:background="#ffffffff"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:paddingLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:weightSum="1.5">
+                        <TextView
+                            android:id="@+id/lblGender"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textSize="20sp"
+                            android:gravity="left"
+                            android:text="@string/Gender"
+                            android:textStyle="bold"
+                            android:layout_weight="1"/>
+                        <TextView
+                            android:id="@+id/tvGender"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textSize="20sp"
+                            android:gravity="left"
+                            android:layout_weight="1"
+                            android:text="Male" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingTop="5dp"
+                        android:weightSum="1.5">
+                        <TextView
+                            android:id="@+id/lblSize"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textSize="20sp"
+                            android:gravity="left"
+                            android:text="@string/Size"
+                            android:textStyle="bold"
+                            android:layout_weight="1"/>
+                        <TextView
+                            android:id="@+id/tvSize"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textSize="20sp"
+                            android:gravity="left"
+                            android:layout_weight="1"
+                            android:text="Small" />
+                    </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:paddingTop="5dp"
+                        android:weightSum="1.5">
+                        <TextView
+                            android:id="@+id/lblAge"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textSize="20sp"
+                            android:gravity="left"
+                            android:text="Age"
+                            android:textStyle="bold"
+                            android:layout_weight="1"/>
+                        <TextView
+                            android:id="@+id/tvAge"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:textSize="20sp"
+                            android:gravity="left"
+                            android:layout_weight="1"
+                            android:text="5" />
+                    </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/petDescriptionCard"
+                    android:background="#ffffffff"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:paddingLeft="10dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:id="@+id/lblPetDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:layout_gravity="top"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:text="@string/lbl_description"/>
+
+                    <TextView
+                        android:id="@+id/tvPetDescription"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:layout_gravity="top"
+                        android:textSize="15sp"/>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/petContactCard"
+                    android:background="#ffffffff"
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="10dp"
+                    android:paddingLeft="10dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:paddingTop="10dp"
+                    android:paddingRight="10dp"
+                    android:paddingBottom="10dp">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:layout_gravity="top"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:text="@string/lbl_contact_details"/>
+
+                    <TextView
+                        android:id="@+id/tvOwnerName"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:layout_gravity="top"
+                        android:textSize="15sp"/>
+                    <TextView
+                        android:id="@+id/tvOwnerAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:layout_gravity="top"
+                        android:textSize="15sp"/>
+                    <TextView
+                        android:id="@+id/tvOwnerEmail"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:layout_gravity="top"
+                        android:textSize="15sp"/>
+                    <TextView
+                        android:id="@+id/tvOwnerPhone"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="top"
+                        android:layout_gravity="top"
+                        android:textSize="15sp"/>
+                </LinearLayout>
+            </LinearLayout>
+        </ScrollView>
+    </LinearLayout>
+
+
+</LinearLayout>
+
+
+
+
+
+
+
+
+
+

@@ -7,26 +7,37 @@
 
     <application
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:displayOptions="useLogo"
+        android:icon="@mipmap/take_me_icon"
         android:label="@string/app_name"
+        android:logo="@drawable/ic_drawer"
         android:theme="@style/AppTheme" >
+        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="TakeMe"/>
         <activity
-            android:name=".SignInTakeMeActivity"
+            android:name=".activities.SignInTakeMeActivity"
+            android:label="@string/sign_in_activity_lable" >
+        </activity>
+        <activity
+            android:name=".activities.SignUpTakeMeActivity"
+            android:label="@string/sign_up_activity_lable" >
+        </activity>
+        <activity
+            android:name=".activities.MainTakeMeActivity"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name=".SignUpTakeMeActivity"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name=".MainTakeMeActivity"
-            android:label="@string/app_name" >
-            <intent-filter>
+            android:name=".activities.StartTakeMeActivity"
+            android:label="@string/title_activity_take_me_start" >
+            <intent-filter android:label="@string/app_name">
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name="com.facebook.FacebookActivity"
+            android:configChanges=
+                "keyboard|keyboardHidden|screenLayout|screenSize|orientation"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:label="@string/app_name" />
     </application>
 
 </manifest>

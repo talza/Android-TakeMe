@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="actions">
+        <item>Search</item>
+        <item>My pets</item>
+        <item>Wish List</item>
+        <item>My Account</item>
+    </string-array>
+
+    <array name="images">
+        <item>@android:drawable/ic_menu_search</item>
+        <item>@android:drawable/ic_menu_gallery</item>
+        <item>@android:drawable/star_off</item>
+        <item>@android:drawable/ic_menu_view</item>
+    </array>
+</resources>

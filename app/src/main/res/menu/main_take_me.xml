@@ -1,24 +1,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.takeme.takemeapp.MainTakeMeActivity">
+    tools:context="com.takeme.takemeapp.activities.MainTakeMeActivity" >
 
     <item android:id="@+id/add_pet_action"
         android:title=""
         android:icon="@android:drawable/ic_menu_add"
-        android:showAsAction="withText|ifRoom"
+        android:showAsAction="always"
         android:visible="true"/>
-
-    <item android:id="@+id/edit_pet_action"
-        android:title=""
-        android:icon="@android:drawable/ic_menu_edit"
-        android:showAsAction="withText|ifRoom"
-        android:visible="true"/>
-
-    <item android:id="@+id/delete_pet_action"
-        android:icon="@android:drawable/ic_menu_delete"
-        android:showAsAction="withText|ifRoom"
-        android:title=""
-        android:visible="true"/>
-
 
 </menu>
