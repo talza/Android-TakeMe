@@ -1,0 +1,66 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="wrap_content"
+    android:layout_height="wrap_content" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    tools:context=".TakeMeActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentEnd="false"
+        android:layout_alignParentStart="false">
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_sign_up_take_me"
+            android:id="@+id/btnSignUp"
+            android:enabled="true"
+            android:elegantTextHeight="true"
+            android:textAllCaps="false"
+            android:onClick="onSignUp"
+            android:layout_gravity="right"
+            android:background="@android:color/transparent"
+            android:layout_marginRight="-10dp" />
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:baselineAligned="false"
+            android:layout_marginBottom="5dp">
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textEmailAddress"
+                android:id="@+id/etEmail"
+                android:hint="@string/lbl_email_address" />
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:id="@+id/etPassword"
+                android:hint="@string/lbl_password" />
+
+        </LinearLayout>
+
+        <Button
+            android:layout_width="fill_parent"
+
+            android:layout_height="wrap_content"
+            android:text="@string/lbl_sign_in_button"
+            android:id="@+id/btnSignIn"
+            android:clickable="true"
+            android:textAllCaps="false"
+            android:enabled="true"
+            android:onClick="onSignIn" />
+
+    </LinearLayout>
+
+</RelativeLayout>
