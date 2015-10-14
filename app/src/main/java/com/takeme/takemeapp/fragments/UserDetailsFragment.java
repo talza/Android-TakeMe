@@ -14,9 +14,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
+import com.facebook.login.LoginManager;
+import com.takeme.models.User;
+import com.takeme.services.GetUserDetailsTask;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.activities.SignInTakeMeActivity;
+import com.takeme.takemeapp.activities.StartTakeMeActivity;
 
 
 /**
@@ -27,7 +32,7 @@ import com.takeme.takemeapp.activities.SignInTakeMeActivity;
  * Use the {@link PetDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserDetailsFragment extends Fragment {
+public class UserDetailsFragment extends Fragment implements  GetUserDetailsTask.UserGetDetailsResponse{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,7 +50,6 @@ public class UserDetailsFragment extends Fragment {
     private EditText mFirstNameEditText;
     private EditText mLastNameEditText;
     private EditText mPhoneNumberEditText;
-    private EditText mAddressEditText;
 
     /**
      * Use this factory method to create a new instance of
@@ -91,14 +95,6 @@ public class UserDetailsFragment extends Fragment {
         // Inflate the layout for this fragment
         final View view = inflater.inflate(R.layout.fragment_user_details, container, false);
 
-      //  this.mSaveButton = (Button) view.findViewById(R.id.btnSave);
-//        mSaveButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                onClickSave(v);
-//            }
-//        });
-
         this.mSignOutButton = (Button) view.findViewById(R.id.btnSignOut);
         this.mSignOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,9 +106,9 @@ public class UserDetailsFragment extends Fragment {
         this.mFirstNameEditText = (EditText) view.findViewById(R.id.etFirstName);
         this.mLastNameEditText = (EditText) view.findViewById(R.id.etLastName);
         this.mPhoneNumberEditText = (EditText) view.findViewById(R.id.etPhoneNumber);
-        this.mAddressEditText = (EditText) view.findViewById(R.id.etAddress);
 
-
+        GetUserDetailsTask getUserDetailsTask = new GetUserDetailsTask(new Long(5),this);
+        getUserDetailsTask.getUserDetails();
         return view;
     }
 
@@ -177,9 +173,6 @@ public class UserDetailsFragment extends Fragment {
             this.mPhoneNumberEditText.setFocusable(true);
             this.mPhoneNumberEditText.setFocusableInTouchMode(true);
 
-            this.mAddressEditText.setEnabled(true);
-            this.mAddressEditText.setFocusable(true);
-            this.mAddressEditText.setFocusableInTouchMode(true);
 
             return true;
         }
@@ -198,12 +191,28 @@ public class UserDetailsFragment extends Fragment {
             this.mPhoneNumberEditText.setEnabled(false);
             this.mPhoneNumberEditText.setFocusable(false);
 
-            this.mAddressEditText.setEnabled(false);
-            this.mAddressEditText.setFocusable(false);
-
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onUserGetDetailsSuccess(User user) {
+        this.mFirstNameEditText.setText(user.getFirstName());
+        this.mLastNameEditText.setText(user.getLastName());
+        this.mPhoneNumberEditText.setText(user.getPhoneNumber());
+    }
+
+    @Override
+    public void onUserGetDetailsFailed() {
+        Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void onRestCallError(Throwable t) {
+        Toast.makeText(getActivity(), "Connection failed", Toast.LENGTH_SHORT).show();
+
     }
 
     /**
@@ -228,8 +237,9 @@ public class UserDetailsFragment extends Fragment {
 
     private void signOut(View v)
     {
-        Intent intentToSignIn = new Intent(getActivity(), SignInTakeMeActivity.class);
-        startActivity(intentToSignIn);
+        Intent intentToStart = new Intent(getActivity(), StartTakeMeActivity.class);
+        startActivity(intentToStart);
+        LoginManager.getInstance().logOut();
         getActivity().finish();
     }
 }

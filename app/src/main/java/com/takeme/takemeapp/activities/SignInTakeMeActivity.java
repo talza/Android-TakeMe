@@ -2,7 +2,6 @@ package com.takeme.takemeapp.activities;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.Menu;
@@ -11,16 +10,16 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.takeme.models.UserToken;
+import com.takeme.services.UserSignInTask;
 import com.takeme.takemeapp.R;
 
-public class SignInTakeMeActivity extends Activity {
+public class SignInTakeMeActivity extends Activity implements UserSignInTask.UserLoginResponse{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in_take_me);
-
-        //Hide action bar
     }
 
     @Override
@@ -48,6 +47,8 @@ public class SignInTakeMeActivity extends Activity {
     public void onSignIn(View view)
     {
 
+        String asd;
+
         EditText etEmail    = ((EditText)findViewById(R.id.etEmail));
         EditText etPassword = ((EditText)findViewById(R.id.etPassword));
 
@@ -59,25 +60,8 @@ public class SignInTakeMeActivity extends Activity {
             return;
         }
 
-        new AsyncTask<Void, Void, Intent>() {
-            @Override
-            protected Intent doInBackground(Void... params) {
-                //String authtoken = sServerAuthenticate.userSignIn(userName, userPass, mAuthTokenType);
-
-                Bundle bndlData = new Bundle();
-                // res.putExtra(AccountManager.KEY_ACCOUNT_NAME, userName);
-                //res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, ACCOUNT_TYPE);
-                // res.putExtra(AccountManager.KEY_AUTHTOKEN, authtoken);
-                // res.putExtra(PARAM_USER_PASS, userPass);
-                final Intent res = new Intent();
-                res.putExtras(bndlData);
-                return res;
-            }
-            @Override
-            protected void onPostExecute(Intent intent) {
-                finishSignIn(intent);
-            }
-        }.execute();
+        UserSignInTask userSignInTask = new UserSignInTask(etEmail.getText().toString(),etPassword.getText().toString(),this);
+        userSignInTask.signIn();
     }
 
     public void onSignUp(View view)
@@ -87,33 +71,29 @@ public class SignInTakeMeActivity extends Activity {
         finish();
     }
 
-    private void finishSignIn(Intent intent) {
-//        String accountName = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-//        String accountPassword = intent.getStringExtra(PARAM_USER_PASS);
-//        final Account account = new Account(accountName, intent.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE));
-//        if (getIntent().getBooleanExtra(ARG_IS_ADDING_NEW_ACCOUNT, false)) {
-//            String authtoken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
-//            String authtokenType = mAuthTokenType;
-//            // Creating the account on the device and setting the auth token we got
-//            // (Not setting the auth token will cause another call to the server to authenticate the user)
-//            mAccountManager.addAccountExplicitly(account, accountPassword, null);
-//            mAccountManager.setAuthToken(account, authtokenType, authtoken);
-//        } else {
-//            mAccountManager.setPassword(account, accountPassword);
-//        }
-//        setAccountAuthenticatorResult(intent.getExtras());
-//        setResult(RESULT_OK, intent);
+    private boolean isValidEmail(CharSequence target) {
+
+        return !TextUtils.isEmpty(target) &&
+                android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+
+    }
+
+    @Override
+    public void onLoginSuccess(UserToken id) {
         Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
-        intentToMain.putExtras(intent.getExtras());
         startActivity(intentToMain);
 
         finish();
     }
 
-    private boolean isValidEmail(CharSequence target) {
+    @Override
+    public void onLoginFailed() {
+        Toast.makeText(SignInTakeMeActivity.this, getString(R.string.msg_invalid_email_password), Toast.LENGTH_SHORT).show();
+    }
 
-        return !TextUtils.isEmpty(target) &&
-                android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches();
+    @Override
+    public void onRestCallError(Throwable t) {
+        Toast.makeText(SignInTakeMeActivity.this, "Connection failed", Toast.LENGTH_SHORT).show();
 
     }
 }

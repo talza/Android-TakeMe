@@ -1,25 +1,32 @@
 package com.takeme.services;
 
-import java.util.List;
-import java.util.Map;
+import com.takeme.models.UserToken;
+import com.takeme.models.User;
+import com.takeme.models.UserLogin;
 
+import retrofit.Call;
 import retrofit.Callback;
-import retrofit.http.DELETE;
+import retrofit.http.Body;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
-import retrofit.http.Query;
-import retrofit.http.QueryMap;
+import retrofit.http.Path;
 
-/**
- * Created by eitan on 24/10/2014.
- */
+
 public interface TakeMeService {
 
+    @POST("user/signIn")
+    Call<UserToken> signIn(@Body UserLogin login);
 
-//    @PUT("/user")
-//    void addUser(@Query("id") String id, @Query("pass") String pass, @Query("name") String name, Callback<PostActionResponse> callback);
-//
+    @POST("user/signUp")
+    Call<UserToken> signUp(@Body User user);
+
+    @GET("user/{id}")
+    Call<User> getUser(@Path("id") Long token);
+
+    @PUT("user/{id}")
+    Callback<PostActionResponse> updateUser(@Path("id") Long token ,@Body User user);
+
 //    //Query ads
 //    @GET("/ad")
 //    void getAd(@QueryMap Map<String, String> params,

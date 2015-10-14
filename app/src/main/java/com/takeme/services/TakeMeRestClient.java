@@ -2,6 +2,7 @@ package com.takeme.services;
 
 import com.squareup.okhttp.OkHttpClient;
 
+import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /* Singleton class to get the rest api to call any method. */
@@ -9,7 +10,7 @@ public class TakeMeRestClient {
 
     private TakeMeService takeMeService;
     private static String ROOT =
-            "http://54.69.124.99:8080/Service/";
+            "https://take-me-server.herokuapp.com/";
 
     /**
      * SingletonHolder is loaded on the first execution of TakeMeRestClient.getInstance()
@@ -27,13 +28,14 @@ public class TakeMeRestClient {
         setupRestClient();
     };
 
-    public TakeMeService get() {
+    public TakeMeService service() {
         return takeMeService;
     }
 
     private void setupRestClient() {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(ROOT)
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
         takeMeService = retrofit.create(TakeMeService.class);

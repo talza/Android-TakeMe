@@ -10,11 +10,11 @@ import com.takeme.takemeapp.R;
  * Created by tzamir on 9/2/2015.
  */
 public class User {
-    private String firstName;
-    private String lastName;
     private String email;
     private String password;
-    private String confirmPassword;
+    private String firstName;
+    private String lastName;
+    private String phoneNumber;
 
     public String getFirstName() {
         return this.firstName;
@@ -48,11 +48,12 @@ public class User {
         this.password = password;
     }
 
-    public String getConfirmPassword() {
-        return confirmPassword;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public void setConfirmPassword(String confirmPassword) {
-        this.confirmPassword = confirmPassword;
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
     }
+
 }

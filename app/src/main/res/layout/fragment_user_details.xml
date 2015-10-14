@@ -42,15 +42,6 @@
                 android:enabled="false"
                 android:focusable="false" />
 
-            <EditText
-                android:id="@+id/etAddress"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="@string/lbl_address"
-                android:layout_marginTop="15dp"
-                android:enabled="false"
-                android:focusable="false" />
-
             <Button
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
