@@ -11,10 +11,13 @@ import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.takeme.services.Constants;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.fragments.NavigationDrawerFragment;
 import com.takeme.takemeapp.fragments.PetDetailsFragment;
+import com.takeme.takemeapp.fragments.PetNewFragment;
 import com.takeme.takemeapp.fragments.PetsListFragment;
 import com.takeme.takemeapp.fragments.UserDetailsFragment;
 
@@ -54,7 +57,6 @@ public class MainTakeMeActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
 
         // update the main content by replacing fragments
-
         Fragment fragment = null;
 
         switch(position) {
@@ -66,19 +68,14 @@ public class MainTakeMeActivity extends Activity
             case 1:
                 mTitle = getString(R.string.title_my_pets_view);
                 fragment = PetsListFragment.newInstance(null,null);
-              //  fragment = new MyPetsFragment();
                 break;
             case 2:
                 mTitle = getString(R.string.title_wish_list_view);
                 fragment = PetsListFragment.newInstance(null,null);
-           //     fragment = new WishListFregment();
                 break;
             case 3:
                 mTitle = getString(R.string.title_my_account_view);
                 fragment = UserDetailsFragment.newInstance(null,null);
-                //signOut();
-//                return;
-
         }
 
         // Create new  transaction
@@ -124,10 +121,24 @@ public class MainTakeMeActivity extends Activity
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
+        if (item.getItemId() == R.id.add_pet_action) {
+            Toast.makeText(this, "Add Pet action.", Toast.LENGTH_SHORT).show();
+
+            Fragment fragment = PetNewFragment.newInstance();
+
+            // Create new  transaction
+            FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+            // Replace whatever is in the fragment_container view with this fragment,
+            // and add the transaction to the back stack
+            transaction.replace(R.id.container, fragment);
+            transaction.addToBackStack(null);
+
+            // Commit the transaction
+            transaction.commit();
+
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -13,13 +13,18 @@ import android.widget.Toast;
 import com.takeme.models.UserToken;
 import com.takeme.services.UserSignUpTask;
 import com.takeme.takemeapp.R;
+import com.takeme.takemeapp.TakeMeApplication;
 
 public class SignUpTakeMeActivity extends Activity implements UserSignUpTask.UserSignUpResponse {
+
+    private TakeMeApplication mApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_take_me);
+        this.mApp =  (TakeMeApplication)getApplication();
+
     }
 
     @Override
@@ -114,7 +119,7 @@ public class SignUpTakeMeActivity extends Activity implements UserSignUpTask.Use
     public void onRegisterSuccess(UserToken id) {
 
         // TODO : Save the user id .
-
+        this.mApp.setCurrentUser(id.getId());
         Toast.makeText(SignUpTakeMeActivity.this, "Sign up succeed", Toast.LENGTH_SHORT).show();
 
         Intent intentToMain = new Intent(this, MainTakeMeActivity.class);

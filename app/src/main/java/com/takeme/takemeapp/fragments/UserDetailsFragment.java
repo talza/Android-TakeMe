@@ -19,7 +19,10 @@ import android.widget.Toast;
 import com.facebook.login.LoginManager;
 import com.takeme.models.User;
 import com.takeme.services.GetUserDetailsTask;
+import com.takeme.services.PostActionResponse;
+import com.takeme.services.UserUpdateTask;
 import com.takeme.takemeapp.R;
+import com.takeme.takemeapp.TakeMeApplication;
 import com.takeme.takemeapp.activities.SignInTakeMeActivity;
 import com.takeme.takemeapp.activities.StartTakeMeActivity;
 
@@ -32,7 +35,7 @@ import com.takeme.takemeapp.activities.StartTakeMeActivity;
  * Use the {@link PetDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserDetailsFragment extends Fragment implements  GetUserDetailsTask.UserGetDetailsResponse{
+public class UserDetailsFragment extends Fragment implements  GetUserDetailsTask.UserGetDetailsResponse, UserUpdateTask.UserUpdateResponse{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -45,11 +48,11 @@ public class UserDetailsFragment extends Fragment implements  GetUserDetailsTask
     private OnFragmentInteractionListener mListener;
     private Menu mMenu;
     private NavigationDrawerFragment mNavigationDrawerFragment;
-    private Button mSaveButton;
     private Button mSignOutButton;
     private EditText mFirstNameEditText;
     private EditText mLastNameEditText;
     private EditText mPhoneNumberEditText;
+    private TakeMeApplication mApp;
 
     /**
      * Use this factory method to create a new instance of
@@ -81,6 +84,7 @@ public class UserDetailsFragment extends Fragment implements  GetUserDetailsTask
         this.mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
 
+        this.mApp =  (TakeMeApplication)getActivity().getApplication();
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -107,7 +111,7 @@ public class UserDetailsFragment extends Fragment implements  GetUserDetailsTask
         this.mLastNameEditText = (EditText) view.findViewById(R.id.etLastName);
         this.mPhoneNumberEditText = (EditText) view.findViewById(R.id.etPhoneNumber);
 
-        GetUserDetailsTask getUserDetailsTask = new GetUserDetailsTask(new Long(5),this);
+        GetUserDetailsTask getUserDetailsTask = new GetUserDetailsTask(this.mApp.getCurrentUser(),this);
         getUserDetailsTask.getUserDetails();
         return view;
     }
@@ -178,6 +182,7 @@ public class UserDetailsFragment extends Fragment implements  GetUserDetailsTask
         }
         else if (id == R.id.save_user_action)
         {
+            updateUser();
             this.mMenu.findItem(R.id.edit_user_action).setVisible(true);
             this.mMenu.findItem(R.id.save_user_action).setVisible(false);
 
@@ -210,6 +215,16 @@ public class UserDetailsFragment extends Fragment implements  GetUserDetailsTask
     }
 
     @Override
+    public void onUpdateSuccess(PostActionResponse PostActionResponse) {
+
+    }
+
+    @Override
+    public void onUpdateFailed(PostActionResponse PostActionResponse) {
+
+    }
+
+    @Override
     public void onRestCallError(Throwable t) {
         Toast.makeText(getActivity(), "Connection failed", Toast.LENGTH_SHORT).show();
 
@@ -230,9 +245,16 @@ public class UserDetailsFragment extends Fragment implements  GetUserDetailsTask
         public void onFragmentInteraction(Uri uri);
     }
 
-    private void onClickSave(View view)
+    private void updateUser()
     {
 
+        UserUpdateTask userUpdateTask =
+                new UserUpdateTask(this.mApp.getCurrentUser(),
+                                   this.mFirstNameEditText.getText().toString(),
+                                   this.mLastNameEditText.getText().toString(),
+                                   this.mPhoneNumberEditText.getText().toString(),
+                                   this);
+        userUpdateTask.updateUser();
     }
 
     private void signOut(View v)

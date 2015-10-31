@@ -25,7 +25,7 @@ public interface TakeMeService {
     Call<User> getUser(@Path("id") Long token);
 
     @PUT("user/{id}")
-    Callback<PostActionResponse> updateUser(@Path("id") Long token ,@Body User user);
+    Call<PostActionResponse> updateUser(@Path("id") Long token ,@Body User user);
 
 //    //Query ads
 //    @GET("/ad")
@@ -33,7 +33,7 @@ public interface TakeMeService {
 //               Callback<List<AdResponseItem>> callback);
 //
 //    @GET("/user")
-//    void getUser(@QueryMap Map<String, String> params, Callback<UserDetails> callback);
+//    void getOwnerDetails(@QueryMap Map<String, String> params, Callback<UserDetails> callback);
 //
 //    @POST("/user")
 //    void updateUser(@QueryMap Map<String, String> params, Callback<PostActionResponse> callback);

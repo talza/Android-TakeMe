@@ -44,7 +44,7 @@ public class PetsListAdapter extends ArrayAdapter<Pet>
 
         // Set Pet Name
         TextView petNameTextView = (TextView) convertView.findViewById(R.id.tvPetName);
-        petNameTextView.setText(pet.getName());
+        petNameTextView.setText(pet.getPetName());
 
         // Set Pet Short Description
         TextView petShortDec = (TextView) convertView.findViewById(R.id.tvPetShortDesc);
@@ -52,7 +52,7 @@ public class PetsListAdapter extends ArrayAdapter<Pet>
 
         // Set Pet Image
         ImageView petImage = (ImageView) convertView.findViewById(R.id.imgPetImage);
-        Picasso.with(getContext()).load(pet.getImgUrl()).into(petImage);
+        Picasso.with(getContext()).load(pet.getPetPhotoUrl()).into(petImage);
 
         // Set Wish List Button
         CheckBox petWishListCheckBox = (CheckBox) convertView.findViewById(R.id.cbWishList);

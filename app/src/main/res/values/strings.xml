@@ -56,4 +56,32 @@
 
     <string name="com_facebook_loginview_log_in_button_long">Facebook</string>
     <string name="facebook_app_id">894116220685422</string>
+    <string name="lbl_name">Name</string>
+    <string name="msg_error_pet_name">Please enter a pet name</string>
+    <string name="msg_error_pet_description">Please enter pet Description</string>
+    <string name="msg_error_pet_age">Please enter a pet petAge</string>
+    <string name="msg_error_pet_picture">Please take a pet picture</string>
+    <string name="msg_success_pet_ad_created">Pet ad created successfully</string>
+    <string name="msg_error_pet_ad_created">Failed to create pet ad</string>
+    <string name="lbl_pet_age">Age</string>
+
+    <string-array name="new_ad_types">
+        <item>Dog</item>
+        <item>Cat</item>
+        <item>Bird</item>
+        <item>Rabbit</item>
+    </string-array>
+
+    <string-array name="new_ad_sizes">
+        <item>Small</item>
+        <item>Medium</item>
+        <item>Large</item>
+        <item>X-Large</item>
+    </string-array>
+
+
+    <string-array name="new_ad_genders">
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
 </resources>

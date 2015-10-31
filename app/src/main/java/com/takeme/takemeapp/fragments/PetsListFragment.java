@@ -88,15 +88,8 @@ public class PetsListFragment extends Fragment {
 
         // populate data
         this.mPetsList = new ArrayList<Pet>();
-        mPetsList.add(new Pet("1","Princess",null,"1","Female","Medium","http://farm5.staticflickr.com/4142/4787427683_3672f1db9a_s.jpg",null));
-        mPetsList.add(new Pet("2","Carmen", null,"1","Male","Medium","http://farm2.staticflickr.com/1008/1420343003_13eeb0f9f3_s.jpg",null));
-        mPetsList.add(new Pet("3","Lili",null,"3","Male","Small","http://farm4.staticflickr.com/3139/2780642603_8d2c90e364_s.jpg",null));
-        mPetsList.add(new Pet("4","Princess",null,"4","Female","Large","http://farm5.staticflickr.com/4142/4787427683_3672f1db9a_s.jpg",null));
-        mPetsList.add(new Pet("5","Princess",null,"1","Male","Large", "http://farm2.staticflickr.com/1008/1420343003_13eeb0f9f3_s.jpg",null));
-        mPetsList.add(new Pet("6","Princess",null,"3","Female","Small","http://farm4.staticflickr.com/3139/2780642603_8d2c90e364_s.jpg",null));
-        mPetsList.add(new Pet("8","Lili",null,"1","Female","Large", "http://farm2.staticflickr.com/1008/1420343003_13eeb0f9f3_s.jpg",null));
-        mPetsList.add(new Pet("9", "Lili", null, "2", "Male", "Small", "http://farm4.staticflickr.com/3139/2780642603_8d2c90e364_s.jpg", null));
-        mPetsList.add(new Pet("7","Princess",null,"1","Medium","Princess","http://farm5.staticflickr.com/4142/4787427683_3672f1db9a_s.jpg",null));
+        mPetsList.add(new Pet("1","Princess","Female","1","Dog","Medium","http://farm5.staticflickr.com/4142/4787427683_3672f1db9a_s.jpg","desciption",true,null));
+
 
     }
 
@@ -116,7 +109,7 @@ public class PetsListFragment extends Fragment {
                 Pet item = (Pet) parent.getSelectedItem();
 
                 FragmentManager fragmentManager = getFragmentManager();
-                Fragment fragment = new PetDetailsFragment();
+                Fragment fragment = PetDetailsFragment.newInstance();
 
                 // Create new  transaction
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -184,11 +177,14 @@ public class PetsListFragment extends Fragment {
         int id = item.getItemId();
 
 //        //noinspection SimplifiableIfStatement
-//        if (id == R.id.edit_pet_action) {
-//            this.mMenu.findItem(R.id.edit_pet_action).setVisible(false);
-//
-//            return true;
-//        }
+        if (id == R.id.search_pets_action) {
+            FragmentManager fragmentManager = getFragmentManager();
+
+            PetsSearchFragment dialogFragment = new PetsSearchFragment();
+            dialogFragment.show(fragmentManager, "PetSearch");
+
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

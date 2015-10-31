@@ -11,7 +11,7 @@
         android:layout_height="72dp"
         android:layout_margin="5dp"
         android:contentDescription="icon"
-        android:src="@mipmap/ic_launcher" />
+        android:src="@mipmap/take_me_icon" />
 
     <LinearLayout
         android:orientation="horizontal"

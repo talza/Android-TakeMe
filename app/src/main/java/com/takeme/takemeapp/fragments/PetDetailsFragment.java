@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.takeme.services.Constants;
 import com.takeme.takemeapp.R;
 
 
@@ -24,15 +25,10 @@ import com.takeme.takemeapp.R;
  * create an instance of this fragment.
  */
 public class PetDetailsFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+//    private static final String ARG_VIEW_MODE = "VIEW_MODE";
 
+//    private int mViewMode;
     private OnFragmentInteractionListener mListener;
     private Menu mMenu;
     private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -41,16 +37,13 @@ public class PetDetailsFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment PetDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PetDetailsFragment newInstance(String param1, String param2) {
+    public static PetDetailsFragment newInstance() {
         PetDetailsFragment fragment = new PetDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+//        args.putInt(ARG_VIEW_MODE, mViewMode);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,10 +60,13 @@ public class PetDetailsFragment extends Fragment {
         this.mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+//        if (getArguments() != null) {
+//            mViewMode = getArguments().getInt(ARG_VIEW_MODE);
+//
+//        }
+//        else{
+//            mViewMode = Constants.PET_DETAILS_VIEW_MODE;
+//        }
 
         setHasOptionsMenu(true);
 
@@ -128,7 +124,6 @@ public class PetDetailsFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-//        //noinspection SimplifiableIfStatement
         if (id == R.id.edit_pet_action) {
             this.mMenu.findItem(R.id.edit_pet_action).setVisible(false);
             return true;

@@ -13,13 +13,18 @@ import android.widget.Toast;
 import com.takeme.models.UserToken;
 import com.takeme.services.UserSignInTask;
 import com.takeme.takemeapp.R;
+import com.takeme.takemeapp.TakeMeApplication;
 
 public class SignInTakeMeActivity extends Activity implements UserSignInTask.UserLoginResponse{
+
+    private TakeMeApplication mApp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in_take_me);
+        this.mApp =  (TakeMeApplication)getApplication();
+
     }
 
     @Override
@@ -46,8 +51,6 @@ public class SignInTakeMeActivity extends Activity implements UserSignInTask.Use
 
     public void onSignIn(View view)
     {
-
-        String asd;
 
         EditText etEmail    = ((EditText)findViewById(R.id.etEmail));
         EditText etPassword = ((EditText)findViewById(R.id.etPassword));
@@ -80,6 +83,7 @@ public class SignInTakeMeActivity extends Activity implements UserSignInTask.Use
 
     @Override
     public void onLoginSuccess(UserToken id) {
+        this.mApp.setCurrentUser(id.getId());
         Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
         startActivity(intentToMain);
 

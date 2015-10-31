@@ -6,29 +6,33 @@ package com.takeme.models;
 public class Pet
 {
     private String id;
-    private String name;
-    private String description;
-    private String age;
-    private String gender;
-    private String size;
-    private String imgUrl;
+    private String petName;
+    private String petGender;
+    private String petAge;
+    private String petSize;
+    private String petType;
+    private String petPhotoUrl;
+    private String petDescription;
     private boolean isWishInList;
-    private String user;
+    private PetOwner ownerDetails;
 
-    public Pet()
-    {
+    public Pet() {
 
     }
 
-    public Pet(String id, String name, String description, String age, String gender, String size, String imgUrl, String user) {
+    public Pet(String id, String petName, String petGender, String petAge, String petSize,
+               String petType, String petPhotoUrl, String petDescription, boolean isWishInList,
+               PetOwner ownerDetails) {
         this.id = id;
-        this.name = name;
-        this.description = description;
-        this.age = age;
-        this.gender = gender;
-        this.size = size;
-        this.imgUrl = imgUrl;
-        this.user = user;
+        this.petName = petName;
+        this.petGender = petGender;
+        this.petAge = petAge;
+        this.petSize = petSize;
+        this.petType = petType;
+        this.petPhotoUrl = petPhotoUrl;
+        this.petDescription = petDescription;
+        this.isWishInList = isWishInList;
+        this.ownerDetails = ownerDetails;
     }
 
     public String getId() {
@@ -39,60 +43,67 @@ public class Pet
         this.id = id;
     }
 
-    public String getName() {
-        return name;
+    public String getPetName() {
+        return petName;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setPetName(String petName) {
+        this.petName = petName;
     }
 
-    public String getDescription() {
-        return description;
+    public String getPetDescription() {
+        return petDescription;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setPetDescription(String petDescription) {
+        this.petDescription = petDescription;
     }
 
-    public String getAge() {
-        return age;
+    public String getPetAge() {
+        return petAge;
     }
 
-    public void setAge(String age) {
-        this.age = age;
+    public void setPetAge(String petAge) {
+        this.petAge = petAge;
     }
 
-    public String getGender() {
-        return gender;
+    public String getPetGender() {
+        return petGender;
     }
 
-    public void setGender(String gender) {
-        this.gender = gender;
+    public void setPetGender(String petGender) {
+        this.petGender = petGender;
     }
 
-    public String getSize() {
-        return size;
+    public String getPetSize() {
+        return petSize;
     }
 
-    public void setSize(String size) {
-        this.size = size;
+    public void setPetSize(String petSize) {
+        this.petSize = petSize;
+    }
+    public String getPetType() {
+        return this.petType;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
+    public void setPetType(String petType){
+        this.petType = petType;
     }
 
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public String getPetPhotoUrl() {
+        return petPhotoUrl;
     }
 
-    public String getUser() {
-        return user;
+    public void setPetPhotoUrl(String petPhotoUrl) {
+        this.petPhotoUrl = petPhotoUrl;
     }
 
-    public void setUser(String user) {
-        this.user = user;
+    public PetOwner getOwnerDetails() {
+        return ownerDetails;
+    }
+
+    public void setOwnerDetails(PetOwner ownerDetails) {
+        this.ownerDetails = ownerDetails;
     }
 
     public boolean isWishInList() {
@@ -103,6 +114,6 @@ public class Pet
         this.isWishInList = isWishInList;
     }
 
-    public String getShortDescription(){ return this.gender +", "+ this.age; }
+    public String getShortDescription(){ return this.petGender +", "+ this.petAge; }
 
 }
