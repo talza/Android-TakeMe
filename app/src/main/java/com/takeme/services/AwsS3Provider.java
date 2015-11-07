@@ -26,9 +26,11 @@ import java.io.File;
 
 public class AwsS3Provider {
 
-    private AWSCredentials awsCredentials; //= new BasicAWSCredentials()
+    private AWSCredentials awsCredentials;
     TransferUtility transferUtility;
     Context context;
+    AmazonS3 s3;
+
     /**
      * SingletonHolder is loaded on the first execution of AwsS3Provider.getInstance()
      * or the first access to SingletonHolder.INSTANCE, not before.
@@ -44,25 +46,26 @@ public class AwsS3Provider {
     public void init(Context context){
         // Create an S3 client
         this.context = context;
-        awsCredentials = new BasicAWSCredentials("AKIAJBDU6Z5BLP5ECSFQ", "atBx/LnTG3tUAW8Kk6XGOPtkeJFHpQqCsQaRAWp2");
+        awsCredentials = new BasicAWSCredentials("", "");
 
-        AmazonS3 s3 = new AmazonS3Client(awsCredentials);
+        s3 = new AmazonS3Client(awsCredentials);
 
         // Set the region of your S3 bucket
         s3.setRegion(Region.getRegion(Regions.EU_WEST_1));
 
         this.transferUtility = new TransferUtility(s3, this.context);
+
     }
 
     private AwsS3Provider() {
 
     }
 
-    public String getPicUrl(UploadResult uploadResult){
+    public String getPicUrl(String fileKey){
 
-        if (uploadResult == null) return null;
+        if (fileKey == null) return null;
 
-        return ("http://" + uploadResult.getBucketName() + ".s3.amazonaws.com/" + uploadResult.getKey());
+        return ("https://s3-" + Regions.EU_WEST_1.getName() + ".amazonaws.com/"+ Constants.IMAGES_BUCKET_NAME +"/" + fileKey);
     }
 
     public void uploadImage(String fileName,File file, FileUploadCallBack fileUploadCallBack){
@@ -79,7 +82,7 @@ public class AwsS3Provider {
                         /* The ObjectMetadata associated with the object*/
         );
 
-        observer.setTransferListener(new UploadTransferListener(fileUploadCallBack, observer));
+        observer.setTransferListener(new UploadTransferListener(fileUploadCallBack,fileKey));
 
     }
 
@@ -88,11 +91,11 @@ public class AwsS3Provider {
     private class UploadTransferListener implements  TransferListener{
 
         private FileUploadCallBack fileUploadCallBack;
-        private TransferObserver observer;
+        private String fileKey;
 
-        public UploadTransferListener(FileUploadCallBack fileUploadCallBack,TransferObserver observer){
+        public UploadTransferListener(FileUploadCallBack fileUploadCallBack, String fileKey){
             this.fileUploadCallBack = fileUploadCallBack;
-            this.observer = observer;
+            this.fileKey = fileKey;
         }
 
         @Override
@@ -100,7 +103,7 @@ public class AwsS3Provider {
 
             if(state.equals(TransferState.COMPLETED))
             {
-                fileUploadCallBack.onUploadToS3Completed(observer.getAbsoluteFilePath());
+                fileUploadCallBack.onUploadToS3Completed(getPicUrl(this.fileKey));
             }
         }
 
