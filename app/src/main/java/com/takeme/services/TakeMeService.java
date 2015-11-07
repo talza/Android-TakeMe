@@ -1,16 +1,23 @@
 package com.takeme.services;
 
+import com.takeme.models.Pet;
 import com.takeme.models.UserToken;
 import com.takeme.models.User;
 import com.takeme.models.UserLogin;
 
+import java.util.List;
+import java.util.Map;
+
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.http.Body;
+import retrofit.http.DELETE;
 import retrofit.http.GET;
 import retrofit.http.POST;
 import retrofit.http.PUT;
 import retrofit.http.Path;
+import retrofit.http.Query;
+import retrofit.http.QueryMap;
 
 
 public interface TakeMeService {
@@ -27,42 +34,21 @@ public interface TakeMeService {
     @PUT("user/{id}")
     Call<PostActionResponse> updateUser(@Path("id") Long token ,@Body User user);
 
-//    //Query ads
-//    @GET("/ad")
-//    void getAd(@QueryMap Map<String, String> params,
-//               Callback<List<AdResponseItem>> callback);
-//
-//    @GET("/user")
-//    void getOwnerDetails(@QueryMap Map<String, String> params, Callback<UserDetails> callback);
-//
-//    @POST("/user")
-//    void updateUser(@QueryMap Map<String, String> params, Callback<PostActionResponse> callback);
-//
-//    @PUT("/ad")
-//    void addAd(@Query("desc") String desc,
-//               @Query("size") String size,
-//               @Query("type") String type,
-//               @Query("user") String user,
-//               @Query("petName") String petName,
-//               @Query("story") String story,
-//               @Query("photoURL") String photoURL,
-//               @Query("gender") String gender,
-//               @Query("age") String age,
-//               Callback<PostActionResponse> callback);
-//
-//    @DELETE("/ad")
-//    void deleteAd(@Query("adID") String adID, Callback<PostActionResponse> callback);
-//
-//    @GET("/like")
-//    void getLikesForAd(@Query("adID") String id, Callback<List<FavRespond>> callback);
-//
-//    @GET("/like")
-//    void getLikesForUser(@Query("user") String user, Callback<List<AdResponseItem>> callback);
-//
-//    @PUT("/like")
-//    void adLike(@Query("adID") String adID, @Query("user") String user, Callback<PostActionResponse> callback);
-//
-//    @DELETE("/like")
-//    void deleteLike(@Query("adID") String adID, @Query("user") String user, Callback<PostActionResponse> callback);
+    @GET("/ad")
+    Call<List<Pet>> findPets(@QueryMap Map<String,String> filters);
+
+    @GET("/ad/{id}")
+    Call<List<Pet>> findPetById(@Query("userId") Long token, @Path("id") Long petId);
+
+    @POST("/ad")
+    Call<PostActionResponse> createPetAd(@Query("userId") Long token, @Body Pet pet);
+
+    @DELETE("/ad/{id}")
+    Call<PostActionResponse> deletePetAd(@Query("userId") Long token, @Path("id") Long petId);
+
+    @PUT("/ad/{id}")
+    Call<PostActionResponse> updatePetAd(@Query("userId") Long token, @Path("id") Long petId, @Body Pet pet);
+
+
 
 }

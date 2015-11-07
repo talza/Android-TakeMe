@@ -1,25 +1,34 @@
 package com.takeme.services;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.text.TextUtils;
+import android.widget.Toast;
 
 import com.amazonaws.auth.AWSCredentials;
 import com.amazonaws.auth.BasicAWSCredentials;
-import com.amazonaws.mobileconnectors.s3.transfermanager.TransferManager;
-import com.amazonaws.mobileconnectors.s3.transfermanager.Upload;
+
 import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
-import com.amazonaws.services.s3.model.CannedAccessControlList;
-import com.amazonaws.services.s3.model.PutObjectRequest;
+
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
+
 
 import java.io.File;
 
+
 public class AwsS3Provider {
 
-    private final String IMAGES_BUCKET_NAME = "petsi-bucket";
-    private final String IMAGES_PREFIX = "pets-pictures/";
-
     private AWSCredentials awsCredentials; //= new BasicAWSCredentials()
-    TransferManager transferManager;
-
+    TransferUtility transferUtility;
+    Context context;
     /**
      * SingletonHolder is loaded on the first execution of AwsS3Provider.getInstance()
      * or the first access to SingletonHolder.INSTANCE, not before.
@@ -32,79 +41,85 @@ public class AwsS3Provider {
         return SingletonHolder.INSTANCE;
     }
 
+    public void init(Context context){
+        // Create an S3 client
+        this.context = context;
+        awsCredentials = new BasicAWSCredentials("AKIAJBDU6Z5BLP5ECSFQ", "atBx/LnTG3tUAW8Kk6XGOPtkeJFHpQqCsQaRAWp2");
+
+        AmazonS3 s3 = new AmazonS3Client(awsCredentials);
+
+        // Set the region of your S3 bucket
+        s3.setRegion(Region.getRegion(Regions.EU_WEST_1));
+
+        this.transferUtility = new TransferUtility(s3, this.context);
+    }
+
     private AwsS3Provider() {
 
-//        this.context = context;
-        awsCredentials = new BasicAWSCredentials("User Name", "Password");
-        transferManager  = new TransferManager(awsCredentials);
     }
 
     public String getPicUrl(UploadResult uploadResult){
+
+        if (uploadResult == null) return null;
 
         return ("http://" + uploadResult.getBucketName() + ".s3.amazonaws.com/" + uploadResult.getKey());
     }
 
     public void uploadImage(String fileName,File file, FileUploadCallBack fileUploadCallBack){
 
-        String fileKey = IMAGES_PREFIX + fileName;
+        String fileKey = Constants.IMAGES_PREFIX + fileName;
 
-        UploadToS3AsynchTask uploadToS3AsynchTask = new UploadToS3AsynchTask(fileUploadCallBack);
-        uploadToS3AsynchTask.execute(new FileToUpload(IMAGES_BUCKET_NAME,fileKey,file));
+        //UploadToS3AsynchTask uploadToS3AsynchTask = new UploadToS3AsynchTask(fileUploadCallBack);
+        //uploadToS3AsynchTask.execute(new FileToUpload(Constants.IMAGES_BUCKET_NAME,fileKey,file));
+
+        TransferObserver observer = transferUtility.upload(
+                Constants.IMAGES_BUCKET_NAME,        /* The bucket to upload to */
+                fileKey,       /* The key for the uploaded object */
+                file          /* The file where the data to upload exists */
+                        /* The ObjectMetadata associated with the object*/
+        );
+
+        observer.setTransferListener(new UploadTransferListener(fileUploadCallBack, observer));
+
     }
 
-    private class FileToUpload{
-        public String bucketName;
-        public String key;
-        public File file;
 
-        private FileToUpload(String bucketName, String key, File file) {
-            this.bucketName = bucketName;
-            this.key = key;
-            this.file = file;
-        }
-    }
 
-    private class UploadToS3AsynchTask extends AsyncTask<FileToUpload,Integer,UploadResult> {
+    private class UploadTransferListener implements  TransferListener{
 
         private FileUploadCallBack fileUploadCallBack;
+        private TransferObserver observer;
 
-        public UploadToS3AsynchTask(FileUploadCallBack fileUploadCallBack) {
+        public UploadTransferListener(FileUploadCallBack fileUploadCallBack,TransferObserver observer){
             this.fileUploadCallBack = fileUploadCallBack;
+            this.observer = observer;
         }
 
         @Override
-        protected UploadResult doInBackground(FileToUpload... fileToUploads) {
+        public void onStateChanged(int id, TransferState state) {
 
-            //Upload upload = transferManager.upload(fileToUploads[0].bucketName,fileToUploads[0].key,fileToUploads[0].file);
-
-            PutObjectRequest putObjectRequest = new PutObjectRequest(fileToUploads[0].bucketName,fileToUploads[0].key,fileToUploads[0].file);
-            putObjectRequest.setCannedAcl(CannedAccessControlList.PublicRead);
-
-            Upload upload = transferManager.upload(putObjectRequest);
-//            transferManager.upload(PutObjectRequest)
-            try {
-                UploadResult uploadResult = upload.waitForUploadResult();
-
-                if (uploadResult.getKey().isEmpty())
-                    return null;
-                else return uploadResult;
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                return null;
+            if(state.equals(TransferState.COMPLETED))
+            {
+                fileUploadCallBack.onUploadToS3Completed(observer.getAbsoluteFilePath());
             }
         }
 
         @Override
-        protected void onPostExecute(UploadResult uploadResult) {
+        public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
 
-            fileUploadCallBack.onUploadToS3Completed(uploadResult);
+        }
+
+        @Override
+        public void onError(int id, Exception ex) {
+            fileUploadCallBack.onUploadToS3Failed();
         }
     }
 
     public interface FileUploadCallBack {
 
-        public void onUploadToS3Completed(UploadResult uploadResult);
+        public void onUploadToS3Completed(String uploadResult);
+        public void onUploadToS3Failed();
+
     }
 
 }

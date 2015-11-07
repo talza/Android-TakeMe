@@ -21,13 +21,18 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.NumberPicker;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
 
 import com.squareup.picasso.Picasso;
+import com.takeme.models.Pet;
 import com.takeme.services.AwsS3Provider;
+import com.takeme.services.Constants;
+import com.takeme.services.PetCreateAdTask;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
 
@@ -35,9 +40,13 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
-public class PetNewFragment extends Fragment implements View.OnClickListener, AwsS3Provider.FileUploadCallBack{ //AddAdListener{
+public class PetNewFragment extends Fragment
+        implements View.OnClickListener,
+                   AwsS3Provider.FileUploadCallBack,
+                   PetCreateAdTask.PetCreateAdResponse{
 
     static final int REQUEST_IMAGE_CAPTURE = 1;
 
@@ -47,9 +56,9 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
     private Button btnSave;
 
     private EditText petNameEditText;
-    private EditText petAgeEditText;
     private EditText petDescEditText;
 
+    private Spinner spAge;
     private Spinner spSize;
     private Spinner spType;
     private Spinner spGender;
@@ -61,6 +70,7 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
     private boolean pictureTaken = false;
 
     private TakeMeApplication meApplication;
+    private NavigationDrawerFragment mNavigationDrawerFragment;
 
     /**
      * Use this factory method to create a new instance of
@@ -90,6 +100,12 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
 
         meApplication = (TakeMeApplication)getActivity().getApplication();
 
+        this.mNavigationDrawerFragment = (NavigationDrawerFragment)
+                getFragmentManager().findFragmentById(R.id.navigation_drawer);
+
+        setHasOptionsMenu(true);
+
+
     }
 
     @Override
@@ -109,14 +125,31 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
         btnSave.setOnClickListener(this);
 
         petNameEditText = (EditText)mPetNewView.findViewById(R.id.etPetName);
-        petAgeEditText = (EditText)mPetNewView.findViewById(R.id.spPetAge);
         petDescEditText = (EditText)mPetNewView.findViewById(R.id.etPetDescription);
 
+        setAgeAdapter();
         setAnimalAdapter();
         setSizeAdapter();
         setGenderAdapter();
 
+        getActivity().getActionBar().setTitle("Add Pet");
+
         return mPetNewView;
+    }
+
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater)
+    {
+        if(!mNavigationDrawerFragment.isDrawerOpen())
+        {
+            getActivity().getActionBar().setTitle("Create Ad");
+            menu.clear();
+            return;
+        }
+
+        super.onCreateOptionsMenu(menu, inflater);
+
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -153,13 +186,51 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
     }
 
     //Set the animal types values set.
+    private void setAgeAdapter()
+    {
+        spAge = (Spinner)mPetNewView.findViewById(R.id.spPetAge);
+
+        //Create an ArrayAdapter using the string array and a default spinner layout
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_spinner_dropdown_item) {
+
+            @Override
+            public View getView(int position, View convertView, ViewGroup parent) {
+
+                View v = super.getView(position, convertView, parent);
+                if (position == getCount()) {
+                    ((TextView)v.findViewById(android.R.id.text1)).setText("");
+                    ((TextView)v.findViewById(android.R.id.text1)).setHint(getItem(getCount())); //"Hint to be displayed"
+                }
+
+                return v;
+            }
+
+            @Override
+            public int getCount() {
+                return super.getCount()-1; // you dont display last item. It is used as hint.
+            }
+
+        };
+
+        for (int i = Constants.MIN_AGE; i <= Constants.MAX_AGE; i++) {
+            adapter.add(String.valueOf(i));
+        }
+        adapter.add("Select Age");
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        //Apply the adapter to the spinner
+        spAge.setAdapter(adapter);
+        spAge.setSelection(adapter.getCount()); //display hint
+    }
+
+    //Set the animal types values set.
     private void setAnimalAdapter()
     {
         spType = (Spinner)mPetNewView.findViewById(R.id.spPetType);
 
         //Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> animalAdapter =
-                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.new_ad_types, android.R.layout.simple_spinner_dropdown_item);
+                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.new_pet_type, android.R.layout.simple_spinner_dropdown_item);
 
         //Specify the layout to use when the list of choices appears
         animalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -175,7 +246,7 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
 
         //Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> animalAdapter =
-                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.new_ad_sizes, android.R.layout.simple_spinner_dropdown_item);
+                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.new_pet_size, android.R.layout.simple_spinner_dropdown_item);
 
         //Specify the layout to use when the list of choices appears
         animalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -191,7 +262,7 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
 
         //Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> animalAdapter =
-                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.new_ad_genders, android.R.layout.simple_spinner_dropdown_item);
+                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.new_pet_gender, android.R.layout.simple_spinner_dropdown_item);
 
         //Specify the layout to use when the list of choices appears
         animalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -202,28 +273,8 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
 
     private void startCamera(){
 
-            dispatchTakePictureIntent();
+        dispatchTakePictureIntent();
 
-    }
-
-    @Override
-    public void onCreateOptionsMenu(Menu menu,MenuInflater inflater) {
-
-        // Inflate the menu; this adds items to the action bar if it is present.
-        super.onCreateOptionsMenu(menu, inflater);
-
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-        return super.onOptionsItemSelected(item);
     }
 
     private void dispatchTakePictureIntent() {
@@ -308,10 +359,7 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
             petNameEditText.setError(getString(R.string.msg_error_pet_name));
             return false;
         }
-        if (petAgeEditText.getText().toString().isEmpty()){
-            petAgeEditText.setError(getString(R.string.msg_error_pet_age));
-            return false;
-        }
+
         if (petDescEditText.getText().toString().isEmpty()){
             petDescEditText.setError(getString(R.string.msg_error_pet_description));
             return false;
@@ -322,6 +370,7 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
             Toast.makeText(getActivity(), getActivity().getString(R.string.msg_error_pet_picture), Toast.LENGTH_LONG).show();
             return false;
         }
+
         return true;
     }
 
@@ -332,6 +381,7 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
 
         // First try to upload image to s3
         AwsS3Provider.getInstance().uploadImage(calcPicFileName(), pictureFile, this);
+        //onUploadToS3Completed(null);
     }
 
     private String calcPicFileName(){
@@ -343,34 +393,51 @@ public class PetNewFragment extends Fragment implements View.OnClickListener, Aw
 
         return (meApplication.getCurrentUser() + currTimestamp + ".jpg");
     }
-    @Override
-    public void onUploadToS3Completed(UploadResult uploadResult) {
 
-        //After image uploaded, saving the ad
-//        AddAdTask addAdTask = new AddAdTask(this,petDescEditText.getText().toString(),
-//                sizeSpinner.getSelectedItem().toString().toUpperCase(),typeSpinner.getSelectedItem().toString().toUpperCase(),
-//                app.getCurrentUser(),petNameEditText.getText().toString(),petStoryEditText.getText().toString(),
-//                app.getPicUrl(uploadResult),genderSpinner.getSelectedItem().toString().toUpperCase(),petAgeEditText.getText().toString());
-//
-//        addAdTask.addAd();
+    @Override
+    public void onUploadToS3Completed(String uploadResult) {
+
+        //After image uploaded, create the ad
+        Pet pet = new Pet();
+        pet.setPetName(petNameEditText.getText().toString());
+        pet.setPetType(String.valueOf(spType.getSelectedItemPosition() + 1));
+        pet.setPetSize(String.valueOf(spSize.getSelectedItemPosition() + 1));
+        pet.setPetAge(String.valueOf(spAge.getSelectedItemPosition() + 1));
+        pet.setPetGender(String.valueOf(spGender.getSelectedItemPosition() + 1));
+        pet.setPetDescription(petDescEditText.getText().toString());
+        pet.setPetPhotoUrl(uploadResult);
+
+        PetCreateAdTask petCreateAdTask = new PetCreateAdTask(meApplication.getCurrentUser(),pet,this);
+        petCreateAdTask.createPetAd();
     }
 
-//    @Override
-//    public void onPetAdCreated() {
-//
-//        showProgress(false);
-//        Toast.makeText(this, getString(R.string.msg_success_pet_ad_created), Toast.LENGTH_LONG).show();
-//    }
-//
-//    @Override
-//    public void onPetAdCreatedFailed() {
-//        showProgress(false);
-//        Toast.makeText(this, R.string.msg_error_pet_ad_created, Toast.LENGTH_LONG).show();
-//    }
-//
-//    @Override
-//    public void onRestCallError(Throwable error) {
-//        showProgress(false);
-//        Toast.makeText(this, getString(R.string.msg_error_pet_ad_created), Toast.LENGTH_LONG).show();
-//    }
+    @Override
+    public void onUploadToS3Failed() {
+        showProgress(false);
+        Toast.makeText(meApplication.getApplicationContext(),"Error occurred trying to Created pet ad",Toast.LENGTH_LONG);
+        getFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onPetCreateAdSuccess() {
+        showProgress(false);
+        Toast.makeText(getActivity().getApplicationContext(), "Pet ad Created successfully", Toast.LENGTH_LONG).show();
+        getFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onPetCreateAdFailed() {
+        showProgress(false);
+        Toast.makeText(getActivity().getApplicationContext(), "Error occurred trying to Created pet ad", Toast.LENGTH_LONG).show();
+        getFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onRestCallError(Throwable t) {
+        showProgress(false);
+        Toast.makeText(getActivity().getApplicationContext(), "Error occurred trying to Created pet ad", Toast.LENGTH_LONG).show();
+        getFragmentManager().popBackStack();
+    }
+
+
 }

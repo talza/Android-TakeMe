@@ -18,12 +18,20 @@ import com.takeme.takemeapp.TakeMeApplication;
 public class SignInTakeMeActivity extends Activity implements UserSignInTask.UserLoginResponse{
 
     private TakeMeApplication mApp;
-
+    private  EditText etEmail;
+    private EditText etPassword;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in_take_me);
         this.mApp =  (TakeMeApplication)getApplication();
+
+        etEmail    = ((EditText)findViewById(R.id.etEmail));
+        etPassword = ((EditText)findViewById(R.id.etPassword));
+
+        etEmail.setText("test1@gmail.com");
+        etPassword.setText("Aa123456");
+
 
     }
 
@@ -51,9 +59,6 @@ public class SignInTakeMeActivity extends Activity implements UserSignInTask.Use
 
     public void onSignIn(View view)
     {
-
-        EditText etEmail    = ((EditText)findViewById(R.id.etEmail));
-        EditText etPassword = ((EditText)findViewById(R.id.etPassword));
 
         if (!isValidEmail(etEmail.getText().toString()) ||
             TextUtils.isEmpty(etPassword.getText().toString()))

@@ -66,21 +66,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"/>
 
-                <EditText
-                    android:id="@+id/etPetDescription"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/lbl_description"
-                    android:layout_marginTop="10dp"/>
-
-                <EditText
-                    android:id="@+id/spPetAge"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/Gender"
-                    android:inputType="number"
-                    android:layout_marginTop="10dp"/>
-
                 <Spinner
                     android:id="@+id/spPetSize"
                     android:layout_width="fill_parent"
@@ -90,7 +75,21 @@
                 <Spinner
                     android:id="@+id/spPetGender"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"/>
+
+                <Spinner
+                    android:id="@+id/spPetAge"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"/>
+
+                <EditText
+                    android:id="@+id/etPetDescription"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/lbl_description"
+                    android:layout_marginTop="10dp"/>
 
             </LinearLayout>
         </ScrollView>
@@ -104,7 +103,8 @@
                 android:layout_height="match_parent"
                 android:text="@string/lbl_save_button"
                 android:textStyle="bold"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:textAllCaps="false"/>
 
         </LinearLayout>
     </LinearLayout>

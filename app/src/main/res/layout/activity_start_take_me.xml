@@ -45,6 +45,7 @@
                     android:id="@+id/button"
                     android:textAllCaps="false"
                     android:layout_marginLeft="-5dp"
+                    android:layout_marginTop="5dp"
                     android:onClick="onSignIn"/>
 
                 <Button
@@ -55,6 +56,8 @@
                     android:layout_width="0dp"
                     android:layout_weight="0.5"
                     android:layout_marginRight="-5dp"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="5dp"
                     android:onClick="onSignUp"/>
 
             </LinearLayout>

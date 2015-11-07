@@ -3,6 +3,8 @@ package com.takeme.takemeapp;
 import android.app.Application;
 import android.content.Context;
 
+import com.takeme.services.AwsS3Provider;
+
 public class TakeMeApplication extends Application { //implements GetAdsUserLikesListener{
 
     public static final String AGE = "Age";
@@ -32,8 +34,7 @@ public class TakeMeApplication extends Application { //implements GetAdsUserLike
     public void onCreate() {
         super.onCreate();
         context = this;
-
-      //  s3Provider = new S3Provider(context);
+        AwsS3Provider.getInstance().init(context);
     }
 
     public static Context getContext(){

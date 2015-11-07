@@ -8,12 +8,12 @@ import retrofit.Callback;
 import retrofit.Response;
 
 
-public class GetUserDetailsTask implements Callback<User> {
+public class UserGetDetailsTask implements Callback<User> {
 
     private UserGetDetailsResponse userGetDetailsResponse;
     private Long token;
 
-    public GetUserDetailsTask(Long token , UserGetDetailsResponse userGetDetailsResponse){
+    public UserGetDetailsTask(Long token, UserGetDetailsResponse userGetDetailsResponse){
         this.userGetDetailsResponse = userGetDetailsResponse;
         this.token = token;
     }

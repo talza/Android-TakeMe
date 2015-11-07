@@ -3,6 +3,8 @@ package com.takeme.takemeapp.fragments;
 import android.app.Activity;
 import android.app.DialogFragment;
 import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,15 +17,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.edmodo.rangebar.RangeBar;
+import com.takeme.services.Constants;
 import com.takeme.takemeapp.R;
 
-public class PetsSearchFragment extends DialogFragment implements View.OnClickListener, RangeBar.OnRangeBarChangeListener{
+public class PetsSearchFragment extends DialogFragment implements RangeBar.OnRangeBarChangeListener{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private static final int MAX_AGE = 20;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -32,12 +34,14 @@ public class PetsSearchFragment extends DialogFragment implements View.OnClickLi
     private Spinner mAnimalSpinner;
     private Spinner mGenderSpinner;
     private Spinner mSizeSpinner;
+    private Button mSerachButton;
 
     private RangeBar mAgeBar;
 
     private TextView mAgeRangeText;
 
     private OnFragmentSearchInteractionListener mListener;
+    private OnSearchClicked mSearchListener = null;
 
     /**
      * Use this factory method to create a new instance of
@@ -54,6 +58,7 @@ public class PetsSearchFragment extends DialogFragment implements View.OnClickLi
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
+
         return fragment;
     }
     public PetsSearchFragment() {
@@ -75,19 +80,32 @@ public class PetsSearchFragment extends DialogFragment implements View.OnClickLi
         // Inflate the layout for this fragment
         View frag = inflater.inflate(R.layout.fragment_pets_search, container, false);
 
-        Button btSearch = (Button)frag.findViewById(R.id.search_button);
-        btSearch.setOnClickListener(this);
-
         mAgeRangeText = (TextView)frag.findViewById(R.id.age_range_text);
-        mAgeRangeText.setText(getRangeText(0,MAX_AGE));
+        mAgeRangeText.setText(getRangeText(Constants.MIN_AGE, Constants.MAX_AGE+1));
 
         mAgeBar = (RangeBar)frag.findViewById(R.id.age_range);
         mAgeBar.setOnRangeBarChangeListener(this);
-        mAgeBar.setTickCount(MAX_AGE);
-
+        mAgeBar.setTickCount(Constants.MAX_AGE + 1);
+        mAgeBar.setThumbIndices(Constants.MIN_AGE,Constants.MAX_AGE);
         setAnimalAdapter(frag);
         setGenderAdapter(frag);
         setSizeAdapter(frag);
+
+        mSerachButton = (Button) frag.findViewById(R.id.btnSerach);
+        mSerachButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                if (mSearchListener != null) {
+                    mSearchListener.onSearchClicked(
+                            mAnimalSpinner.getSelectedItemPosition(),
+                            mSizeSpinner.getSelectedItemPosition(),
+                            mGenderSpinner.getSelectedItemPosition(),
+                            mAgeBar.getLeftIndex(),
+                            mAgeBar.getRightIndex());
+                }
+            }
+        });
         return frag;
     }
 
@@ -98,7 +116,7 @@ public class PetsSearchFragment extends DialogFragment implements View.OnClickLi
 
 //      Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> animalAdapter =
-                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.new_ad_types, android.R.layout.simple_spinner_dropdown_item);
+                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.pet_type, android.R.layout.simple_spinner_dropdown_item);
 
 //      Specify the layout to use when the list of choices appears
         animalAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -114,7 +132,7 @@ public class PetsSearchFragment extends DialogFragment implements View.OnClickLi
 
 //      Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> genderAdapter =
-                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.new_ad_genders, android.R.layout.simple_spinner_dropdown_item);
+                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.pet_gender, android.R.layout.simple_spinner_dropdown_item);
 
 //      Specify the layout to use when the list of choices appears
         genderAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -130,7 +148,7 @@ public class PetsSearchFragment extends DialogFragment implements View.OnClickLi
 
 //      Create an ArrayAdapter using the string array and a default spinner layout
         ArrayAdapter<CharSequence> sizeAdapter =
-                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.new_ad_sizes, android.R.layout.simple_spinner_dropdown_item);
+                ArrayAdapter.createFromResource(getActivity().getBaseContext(), R.array.pet_size, android.R.layout.simple_spinner_dropdown_item);
 
 //      Specify the layout to use when the list of choices appears
         sizeAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -165,40 +183,6 @@ public class PetsSearchFragment extends DialogFragment implements View.OnClickLi
         mListener = null;
     }
 
-    @Override
-    public void onClick(View view) {
-
-//        switch (view.getId())
-//        {
-//
-//            case R.id.search_button:
-//                Intent toSearchRes = new Intent(this.getActivity(), PetItemListActivity.class);
-//
-//                //Fill the intent with the filter data.
-//                if (mSizeSpinner.getSelectedItemPosition() != 0)
-//                    toSearchRes.putExtra(App.SIZE,mSizeSpinner.getSelectedItem().toString());
-//                else
-//                    toSearchRes.putExtra(App.SIZE,"");
-//
-//                if (mGenderSpinner.getSelectedItemPosition() != 0)
-//                    toSearchRes.putExtra(App.GENDER,mGenderSpinner.getSelectedItem().toString());
-//                else
-//                    toSearchRes.putExtra(App.GENDER,"");
-//
-//                if (mAnimalSpinner.getSelectedItemPosition() != 0)
-//                    toSearchRes.putExtra(App.ANIMAL,mAnimalSpinner.getSelectedItem().toString());
-//                else
-//                    toSearchRes.putExtra(App.ANIMAL,"");
-//
-//                toSearchRes.putExtra(App.FROM_AGE, mAgeBar.getLeftIndex());
-//                toSearchRes.putExtra(App.TO_AGE,mAgeBar.getRightIndex());
-//
-//                //Go to results activity.
-//                startActivity(toSearchRes);
-//        }
-
-    }
-
     private String getRangeText(int from,int to){
         return (Integer.toString(from) + "   -   " + Integer.toString(to));
     }
@@ -206,6 +190,11 @@ public class PetsSearchFragment extends DialogFragment implements View.OnClickLi
     public void onIndexChangeListener(RangeBar rangeBar, int min, int max) {
 
         mAgeRangeText.setText(getRangeText(min,max));
+    }
+
+    public void setSearchClickedListener(OnSearchClicked searchClickedListener)
+    {
+        mSearchListener = searchClickedListener;
     }
 
     /**
@@ -223,4 +212,12 @@ public class PetsSearchFragment extends DialogFragment implements View.OnClickLi
         public void onFragmentSearchInteraction(Uri uri);
     }
 
+
+    public interface  OnSearchClicked{
+        public void onSearchClicked(int animalType,
+                                    int animalSize,
+                                    int animalGender,
+                                    int animalAgeFrom,
+                                    int animalAgeTo);
+    }
 }

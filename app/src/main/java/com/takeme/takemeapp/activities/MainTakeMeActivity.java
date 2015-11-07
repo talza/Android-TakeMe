@@ -19,13 +19,15 @@ import com.takeme.takemeapp.fragments.NavigationDrawerFragment;
 import com.takeme.takemeapp.fragments.PetDetailsFragment;
 import com.takeme.takemeapp.fragments.PetNewFragment;
 import com.takeme.takemeapp.fragments.PetsListFragment;
+import com.takeme.takemeapp.fragments.PetsSearchFragment;
 import com.takeme.takemeapp.fragments.UserDetailsFragment;
 
 public class MainTakeMeActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         PetsListFragment.OnFragmentInteractionListener,
         PetDetailsFragment.OnFragmentInteractionListener,
-        UserDetailsFragment.OnFragmentInteractionListener{
+        UserDetailsFragment.OnFragmentInteractionListener,
+        PetsSearchFragment.OnFragmentSearchInteractionListener{
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -51,6 +53,10 @@ public class MainTakeMeActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+       // getActionBar().setLogo(R.drawable.ic_take_me);
+       // getActionBar().setDisplayUseLogoEnabled(true);
+       // getActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -62,16 +68,16 @@ public class MainTakeMeActivity extends Activity
         switch(position) {
             default:
             case 0:
-                mTitle = getString(R.string.title_search_view);
-                fragment = PetsListFragment.newInstance(null,null);
+                mTitle = (getString(R.string.title_pets_List));
+                fragment = PetsListFragment.newInstance(Constants.PetsListMode.PetsList);
                 break;
             case 1:
                 mTitle = getString(R.string.title_my_pets_view);
-                fragment = PetsListFragment.newInstance(null,null);
+                fragment = PetsListFragment.newInstance(Constants.PetsListMode.MyPets);
                 break;
             case 2:
                 mTitle = getString(R.string.title_wish_list_view);
-                fragment = PetsListFragment.newInstance(null,null);
+                fragment = PetsListFragment.newInstance(Constants.PetsListMode.WishList);
                 break;
             case 3:
                 mTitle = getString(R.string.title_my_account_view);
@@ -98,7 +104,8 @@ public class MainTakeMeActivity extends Activity
         }
         actionBar.setDisplayShowTitleEnabled(true);
         actionBar.setTitle(mTitle);
-
+        actionBar.setIcon(R.drawable.ic_take_me);
+        actionBar.setLogo(R.drawable.ic_take_me);
     }
 
     @Override
@@ -122,7 +129,6 @@ public class MainTakeMeActivity extends Activity
         int id = item.getItemId();
 
         if (item.getItemId() == R.id.add_pet_action) {
-            Toast.makeText(this, "Add Pet action.", Toast.LENGTH_SHORT).show();
 
             Fragment fragment = PetNewFragment.newInstance();
 
@@ -143,10 +149,19 @@ public class MainTakeMeActivity extends Activity
         return super.onOptionsItemSelected(item);
     }
 
+    public void setTitle(String title)
+    {
+        this.mTitle = title;
+    }
 
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onFragmentSearchInteraction(Uri uri) {
 
     }
 }

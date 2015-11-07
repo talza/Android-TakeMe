@@ -17,6 +17,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/lbl_sign_up_take_me"
+            android:textColor="@android:color/black"
             android:id="@+id/btnSignUp"
             android:enabled="true"
             android:elegantTextHeight="true"

@@ -14,9 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.takeme.models.Pet;
+import com.takeme.services.Constants;
+import com.takeme.services.PetsFindAdTask;
 import com.takeme.takemeapp.R;
+import com.takeme.takemeapp.TakeMeApplication;
 import com.takeme.takemeapp.listadapters.PetsListAdapter;
 
 import java.util.ArrayList;
@@ -31,15 +35,20 @@ import java.util.List;
  * Use the {@link PetsListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PetsListFragment extends Fragment {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+public class PetsListFragment extends Fragment
+        implements PetsSearchFragment.OnSearchClicked,
+        PetsFindAdTask.PetsGetListResponse{
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+    private Constants.PetsListMode petListMode;
+
+    private Long token;
+    private int type;
+    private int size;
+    private int ageFrom;
+    private int ageTo;
+    private int gender;
+    private boolean wishList;
 
     private List mPetsList;
     private ListView mPetsListView;
@@ -47,21 +56,22 @@ public class PetsListFragment extends Fragment {
     private OnFragmentInteractionListener mListener;
     private Menu mMenu;
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    private PetsSearchFragment mPetsSearchFragment;
+
+    private TakeMeApplication meApplication;
+
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment PetsListFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PetsListFragment newInstance(String param1, String param2) {
+    public static PetsListFragment newInstance(Constants.PetsListMode petsListMode) {
         PetsListFragment fragment = new PetsListFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putString(Constants.PET_LIST_MODE, petsListMode.toString());
         fragment.setArguments(args);
         return fragment;
     }
@@ -80,17 +90,37 @@ public class PetsListFragment extends Fragment {
 
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
+        getActivity().setTitle(getString(R.string.title_pets_List));
 
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            petListMode = Constants.PetsListMode.valueOf(getArguments().getString(Constants.PET_LIST_MODE));
         }
+
+        meApplication = (TakeMeApplication)getActivity().getApplication();
+
+        switch (petListMode)
+        {
+            case PetsList:
+                token = null;
+                wishList = false;
+                break;
+            case MyPets:
+                token = meApplication.getCurrentUser();
+                wishList = false;
+                break;
+            case WishList:
+                this.wishList = true;
+                break;
+        }
+
+        PetsFindAdTask petsFindTask = new PetsFindAdTask(token,0,0,0,0,0,this.wishList,this);
+        petsFindTask.getPetsList();
 
         // populate data
         this.mPetsList = new ArrayList<Pet>();
-        mPetsList.add(new Pet("1","Princess","Female","1","Dog","Medium","http://farm5.staticflickr.com/4142/4787427683_3672f1db9a_s.jpg","desciption",true,null));
 
-
+        mPetsSearchFragment = new PetsSearchFragment();
+        mPetsSearchFragment.setSearchClickedListener(this);
     }
 
     @Override
@@ -178,15 +208,51 @@ public class PetsListFragment extends Fragment {
 
 //        //noinspection SimplifiableIfStatement
         if (id == R.id.search_pets_action) {
-            FragmentManager fragmentManager = getFragmentManager();
 
-            PetsSearchFragment dialogFragment = new PetsSearchFragment();
-            dialogFragment.show(fragmentManager, "PetSearch");
+            FragmentManager fragmentManager = getFragmentManager();
+            mPetsSearchFragment.show(fragmentManager, "PetSearch");
 
             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onSearchClicked(int animalType,
+                                int animalSize,
+                                int animalGender,
+                                int animalAgeFrom,
+                                int animalAgeTo) {
+
+       mPetsSearchFragment.dismiss();
+
+        PetsFindAdTask petsFindTask = new PetsFindAdTask(new Long(0),
+                                                     animalType,
+                                                     animalSize,
+                                                     animalAgeFrom,
+                                                     animalAgeTo,
+                                                     animalGender,
+                                                     false,
+                                                     this);
+        petsFindTask.getPetsList();
+    }
+
+    @Override
+    public void onPetsGetListSuccess(List<Pet> lsPets) {
+        mPetsList = lsPets;
+    }
+
+    @Override
+    public void onPetsGetListFailed() {
+        Toast.makeText(this.getActivity().getApplicationContext(),"An error occurred while getting pets",Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onRestCallError(Throwable t) {
+        Toast.makeText(this.getActivity().getApplicationContext(), "An error occurred while getting pets", Toast.LENGTH_LONG).show();
+
     }
 
     /**

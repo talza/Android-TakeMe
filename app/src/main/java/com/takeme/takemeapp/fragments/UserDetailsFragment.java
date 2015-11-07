@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
-import android.text.method.KeyListener;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -18,12 +17,11 @@ import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
 import com.takeme.models.User;
-import com.takeme.services.GetUserDetailsTask;
+import com.takeme.services.UserGetDetailsTask;
 import com.takeme.services.PostActionResponse;
 import com.takeme.services.UserUpdateTask;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
-import com.takeme.takemeapp.activities.SignInTakeMeActivity;
 import com.takeme.takemeapp.activities.StartTakeMeActivity;
 
 
@@ -35,7 +33,7 @@ import com.takeme.takemeapp.activities.StartTakeMeActivity;
  * Use the {@link PetDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class UserDetailsFragment extends Fragment implements  GetUserDetailsTask.UserGetDetailsResponse, UserUpdateTask.UserUpdateResponse{
+public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask.UserGetDetailsResponse, UserUpdateTask.UserUpdateResponse{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -111,8 +109,8 @@ public class UserDetailsFragment extends Fragment implements  GetUserDetailsTask
         this.mLastNameEditText = (EditText) view.findViewById(R.id.etLastName);
         this.mPhoneNumberEditText = (EditText) view.findViewById(R.id.etPhoneNumber);
 
-        GetUserDetailsTask getUserDetailsTask = new GetUserDetailsTask(this.mApp.getCurrentUser(),this);
-        getUserDetailsTask.getUserDetails();
+        UserGetDetailsTask userGetDetailsTask = new UserGetDetailsTask(this.mApp.getCurrentUser(),this);
+        userGetDetailsTask.getUserDetails();
         return view;
     }
 

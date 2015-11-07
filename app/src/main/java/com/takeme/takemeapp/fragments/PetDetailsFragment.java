@@ -60,14 +60,6 @@ public class PetDetailsFragment extends Fragment {
         this.mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
 
-//        if (getArguments() != null) {
-//            mViewMode = getArguments().getInt(ARG_VIEW_MODE);
-//
-//        }
-//        else{
-//            mViewMode = Constants.PET_DETAILS_VIEW_MODE;
-//        }
-
         setHasOptionsMenu(true);
 
     }
@@ -110,6 +102,7 @@ public class PetDetailsFragment extends Fragment {
         {
             inflater.inflate(R.menu.menu_pet_details, menu);
             this.mMenu = menu;
+            getActivity().getActionBar().setTitle("Pet Details");
             return;
         }
 
