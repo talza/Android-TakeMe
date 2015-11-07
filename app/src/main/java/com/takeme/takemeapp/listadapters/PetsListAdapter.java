@@ -12,7 +12,9 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.takeme.models.Pet;
+import com.takeme.services.TakeMeUtil;
 import com.takeme.takemeapp.R;
+import com.takeme.takemeapp.TakeMeApplication;
 
 import java.util.List;
 
@@ -24,6 +26,7 @@ public class PetsListAdapter extends ArrayAdapter<Pet>
 
     List<Pet> lsPets;
     View convertView;
+    private TakeMeApplication meApplication;
 
     public PetsListAdapter(Context context, List<Pet> lsPets) {
         super(context, R.layout.pet_list_item, lsPets);

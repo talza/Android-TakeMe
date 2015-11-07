@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 
 import com.takeme.services.AwsS3Provider;
+import com.takeme.services.TakeMeUtil;
 
 public class TakeMeApplication extends Application { //implements GetAdsUserLikesListener{
 
@@ -20,38 +21,23 @@ public class TakeMeApplication extends Application { //implements GetAdsUserLike
     public static final int LOGIN = 1;
     public static final int SIGN_UP = 2;
 
-    //public PetListProvider petListProvider = new PetListProvider();
-
     private static Context context;
 
-   // private S3Provider s3Provider;
-
     private Long currentUser;
-
-   // private List<AdResponseItem> userFavs = new ArrayList<AdResponseItem>();
 
     @Override
     public void onCreate() {
         super.onCreate();
         context = this;
+
         AwsS3Provider.getInstance().init(context);
+        TakeMeUtil.getInstance().init(context);
     }
 
     public static Context getContext(){
         return context;
     }
 
-//    public void getFileForS3Key(String key, FileDownloadCallBack fileDownloadCallBack){
-//        s3Provider.getFileForKey(key,fileDownloadCallBack);
-//    }
-//
-//    public void uploadImageToS3(String fileName,File file, FileUploadCallBack fileUploadCallBack){
-//        s3Provider.uploadImage(fileName,file,fileUploadCallBack);
-//    }
-//
-//    public String getPicUrl(UploadResult uploadResult){
-//        return s3Provider.getPicUrl(uploadResult);
-//    }
 
     public Long  getCurrentUser() {
         return currentUser;
@@ -63,34 +49,10 @@ public class TakeMeApplication extends Application { //implements GetAdsUserLike
 //        refreshUserLikes();
     }
 
-//    public void refreshUserLikes(){
-//
-//        GetAdsUserLikesTask getAdsUserLikesTask = new GetAdsUserLikesTask(this,currentUser);
-//        getAdsUserLikesTask.getLikes();
-//    }
+    public String getGenderByIndex(int index) {
+        String[] androidStrings = getResources().getStringArray(R.array.pet_gender);
+        return androidStrings[index];
+    }
 
-//    public List<AdResponseItem> getUserFavs() {
-//        return userFavs;
-//    }
-
-//    public boolean isOnFavList(String id){
-//
-//        for (AdResponseItem adResponseItem: userFavs){
-//            if (Integer.toString(adResponseItem.getId()).equals(id))
-//                return true;
-//        }
-//
-//        return false;
-//    }
-
-//    @Override
-//    public void onGetAdsUserLikesSuccess(List<AdResponseItem> likes) {
-//        userFavs = likes;
-//    }
-//
-//    @Override
-//    public void onRestCallError(RetrofitError error) {
-//
-//    }
 }
 

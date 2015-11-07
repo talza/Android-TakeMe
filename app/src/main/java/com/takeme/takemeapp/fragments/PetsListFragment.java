@@ -52,6 +52,7 @@ public class PetsListFragment extends Fragment
 
     private List mPetsList;
     private ListView mPetsListView;
+    private PetsListAdapter petsListAdapter;
 
     private OnFragmentInteractionListener mListener;
     private Menu mMenu;
@@ -113,7 +114,7 @@ public class PetsListFragment extends Fragment
                 break;
         }
 
-        PetsFindAdTask petsFindTask = new PetsFindAdTask(token,0,0,0,0,0,this.wishList,this);
+        PetsFindAdTask petsFindTask = new PetsFindAdTask(token,this.type,this.size,this.ageFrom,this.ageTo,this.gender,this.wishList,this);
         petsFindTask.getPetsList();
 
         // populate data
@@ -130,7 +131,8 @@ public class PetsListFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_pets_list, container, false);
         this.mPetsListView = (ListView) view.findViewById(R.id.lvPets);
 
-        this.mPetsListView.setAdapter(new PetsListAdapter(view.getContext(), this.mPetsList));
+        petsListAdapter = new PetsListAdapter(view.getContext(), this.mPetsList);
+        this.mPetsListView.setAdapter(petsListAdapter);
 
         this.mPetsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -227,20 +229,33 @@ public class PetsListFragment extends Fragment
 
        mPetsSearchFragment.dismiss();
 
-        PetsFindAdTask petsFindTask = new PetsFindAdTask(new Long(0),
-                                                     animalType,
-                                                     animalSize,
-                                                     animalAgeFrom,
-                                                     animalAgeTo,
-                                                     animalGender,
-                                                     false,
+        this.type = animalType;
+        this.size = animalSize;
+        this.gender = animalGender;
+        this.ageFrom = animalAgeFrom;
+        this.ageTo = animalAgeTo;
+        PetsFindAdTask petsFindTask = new PetsFindAdTask(this.token,
+                                                     this.type,
+                                                     this.size,
+                                                     this.ageFrom,
+                                                     this.ageTo,
+                                                     this.gender,
+                                                     this.wishList,
                                                      this);
         petsFindTask.getPetsList();
     }
 
     @Override
     public void onPetsGetListSuccess(List<Pet> lsPets) {
-        mPetsList = lsPets;
+
+        this.mPetsList.clear();
+        for (Pet pet: lsPets) {
+            this.mPetsList.add(pet);
+        }
+
+        mPetsListView.invalidate();
+        petsListAdapter.notifyDataSetChanged();
+
     }
 
     @Override

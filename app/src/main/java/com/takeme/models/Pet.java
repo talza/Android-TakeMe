@@ -1,5 +1,7 @@
 package com.takeme.models;
 
+import com.takeme.services.TakeMeUtil;
+
 /**
  * Created by tzamir on 9/13/2015.
  */
@@ -114,6 +116,9 @@ public class Pet
         this.isWishInList = isWishInList;
     }
 
-    public String getShortDescription(){ return this.petGender +", "+ this.petAge; }
+    public String getShortDescription(){
+
+        return TakeMeUtil.getInstance().getGenderByIndex(Integer.valueOf(this.petGender)) +", "+ this.petAge;
+    }
 
 }

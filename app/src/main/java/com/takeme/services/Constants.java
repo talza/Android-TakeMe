@@ -7,9 +7,6 @@ public final class Constants {
 
     public static final int MAX_AGE = 20;
     public static final int MIN_AGE = 1;
-    public static final String COGNITO_POOL_ID = "CHANGE_ME";
-
-    public static final String BUCKET_NAME = "CHANGE_ME";
 
     public static final int PET_UPDATE_MODE = 1;
     public static final int PET_NEW_MODE = 2;

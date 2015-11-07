@@ -44,15 +44,15 @@ public class PetsFindAdTask implements Callback<List<Pet>> {
         HashMap<String,String> hmFilter = new HashMap<>();
 
         if(this.token != null && this.token.intValue() != 0) {
-            hmFilter.put("token",this.token.toString());
+            hmFilter.put("userId",this.token.toString());
         }
 
         if (this.type > 0) {
-            hmFilter.put("type", String.valueOf(this.type));
+            hmFilter.put("petType", String.valueOf(this.type));
         }
 
         if (this.size > 0 ) {
-            hmFilter.put("size", String.valueOf(this.size));
+            hmFilter.put("petSize", String.valueOf(this.size));
         }
 
         if(this.ageFrom > 0) {
@@ -63,7 +63,7 @@ public class PetsFindAdTask implements Callback<List<Pet>> {
             hmFilter.put("ageTo", String.valueOf(this.ageTo));
         }
          if(this.gender > 0)  {
-             hmFilter.put("gender", String.valueOf(this.gender));
+             hmFilter.put("petGender", String.valueOf(this.gender));
          }
 
          hmFilter.put("wishList", String.valueOf(this.wishList));
