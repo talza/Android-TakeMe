@@ -9,7 +9,6 @@
         android:id="@+id/imgPetImage"
         android:layout_width="72dp"
         android:layout_height="72dp"
-        android:layout_margin="5dp"
         android:contentDescription="icon"
         android:src="@mipmap/take_me_icon" />
 
@@ -17,7 +16,8 @@
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:nestedScrollingEnabled="false">
+        android:nestedScrollingEnabled="false"
+        android:paddingTop="10dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -33,14 +33,15 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:text="@android:string/unknownName"/>
+                    android:text="@android:string/unknownName"
+                    android:paddingTop="5dp" />
 
                 <TextView
                     android:id="@+id/tvPetShortDesc"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:text="@android:string/unknownName"/>
+                    android:text="@android:string/unknownName" />
 
             </LinearLayout>
 

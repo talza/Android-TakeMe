@@ -1,6 +1,7 @@
 package com.takeme.takemeapp.fragments;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
@@ -11,9 +12,18 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+import com.takeme.models.Pet;
 import com.takeme.services.Constants;
+import com.takeme.services.PetDeleteAdTask;
+import com.takeme.services.PetGetAdTask;
+import com.takeme.services.TakeMeUtil;
 import com.takeme.takemeapp.R;
+import com.takeme.takemeapp.TakeMeApplication;
 
 
 /**
@@ -24,14 +34,27 @@ import com.takeme.takemeapp.R;
  * Use the {@link PetDetailsFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PetDetailsFragment extends Fragment {
+public class PetDetailsFragment extends Fragment implements
+        PetGetAdTask. PetGetAdResponse,
+        PetDeleteAdTask.PetDeleteAdResponse{
 
-//    private static final String ARG_VIEW_MODE = "VIEW_MODE";
-
-//    private int mViewMode;
     private OnFragmentInteractionListener mListener;
     private Menu mMenu;
     private NavigationDrawerFragment mNavigationDrawerFragment;
+    private String mTitle = "Pet Details";
+
+    private Pet pet;
+    boolean mIsPetOwner = false;
+    private TakeMeApplication meApplication;
+
+    private TextView petDesc;
+    private ImageView petImage;
+    private TextView petSize;
+    private TextView petGender;
+    private TextView petAge;
+    private TextView ownerName;
+    private TextView ownerEmail;
+    private TextView ownerPhone;
 
     /**
      * Use this factory method to create a new instance of
@@ -40,10 +63,10 @@ public class PetDetailsFragment extends Fragment {
      * @return A new instance of fragment PetDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PetDetailsFragment newInstance() {
+    public static PetDetailsFragment newInstance(int petId) {
         PetDetailsFragment fragment = new PetDetailsFragment();
         Bundle args = new Bundle();
-//        args.putInt(ARG_VIEW_MODE, mViewMode);
+        args.putInt(Constants.PET_DETAILS_ID,petId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -62,13 +85,33 @@ public class PetDetailsFragment extends Fragment {
 
         setHasOptionsMenu(true);
 
+        meApplication = (TakeMeApplication)getActivity().getApplication();
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_pet_details, container, false);
+        View view = inflater.inflate(R.layout.fragment_pet_details, container, false);
+
+        petImage = (ImageView) view.findViewById(R.id.det_petimage);
+        petSize = (TextView) view.findViewById(R.id.tvSize);
+        petGender = (TextView) view.findViewById(R.id.tvGender);
+        petAge = (TextView) view.findViewById(R.id.tvAge);
+        petDesc = (TextView) view.findViewById(R.id.tvPetDescription);
+
+        ownerName = (TextView) view.findViewById(R.id.tvOwnerName);
+        ownerEmail = (TextView) view.findViewById(R.id.tvOwnerEmail);
+        ownerPhone = (TextView) view.findViewById(R.id.tvOwnerPhone);
+
+        if(getArguments() != null){
+            int petId = getArguments().getInt(Constants.PET_DETAILS_ID);
+            PetGetAdTask petGetAdTask = new PetGetAdTask(meApplication.getCurrentUser(),new Long(petId),this);
+            petGetAdTask.getPetAd();
+        }
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -102,7 +145,12 @@ public class PetDetailsFragment extends Fragment {
         {
             inflater.inflate(R.menu.menu_pet_details, menu);
             this.mMenu = menu;
-            getActivity().getActionBar().setTitle("Pet Details");
+            getActivity().getActionBar().setTitle(mTitle);
+
+
+            this.mMenu.findItem(R.id.delete_pet_action).setVisible(mIsPetOwner);
+            this.mMenu.findItem(R.id.edit_pet_action).setVisible(mIsPetOwner);
+
             return;
         }
 
@@ -117,12 +165,88 @@ public class PetDetailsFragment extends Fragment {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        if (id == R.id.edit_pet_action) {
-            this.mMenu.findItem(R.id.edit_pet_action).setVisible(false);
-            return true;
+        switch (id){
+            case R.id.edit_pet_action:
+                Fragment fragment = PetNewFragment.newInstance(
+                        pet.getId(),
+                        pet.getPetName(),
+                        pet.getPetType(),
+                        pet.getPetSize(),
+                        pet.getPetAge(),
+                        pet.getPetGender(),
+                        pet.getPetDescription(),
+                        pet.getPetPhotoUrl());
+
+                // Create new  transaction
+                FragmentTransaction transaction = getFragmentManager().beginTransaction();
+
+                // Replace whatever is in the fragment_container view with this fragment,
+                // and add the transaction to the back stack
+                transaction.replace(R.id.container, fragment);
+                transaction.addToBackStack(null);
+
+                // Commit the transaction
+                transaction.commit();
+                return true;
+            case R.id.delete_pet_action:
+                PetDeleteAdTask petDeleteAdTask = new PetDeleteAdTask(meApplication.getCurrentUser(),pet.getId(),this);
+                petDeleteAdTask.deletePetAd();
+             return true;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onPetGetAdSuccess(Pet pet) {
+        this.pet = pet;
+        mTitle = pet.getPetName();
+        petAge.setText(pet.getPetAge());
+        petGender.setText(TakeMeUtil.getInstance().getGenderByIndex(Integer.valueOf(pet.getPetGender())));
+        petSize.setText(TakeMeUtil.getInstance().getSizeByIndex(Integer.valueOf(pet.getPetSize())));
+        petDesc.setText(pet.getPetDescription());
+
+        Picasso.with(getActivity()).load(pet.getPetPhotoUrl()).into(petImage);
+
+        ownerEmail.setText(pet.getPetOwner().getOwnerEmail());
+        ownerName.setText(pet.getPetOwner().getOwnerFirstName() + " " + pet.getPetOwner().getOwnerLastName());
+        ownerPhone.setText(pet.getPetOwner().getOwnerPhone());
+
+        if(this.pet != null               &&
+           this.pet.getPetOwner() != null &&
+           meApplication.getCurrentUser().equals(this.pet.getPetOwner().getOwnerId()))
+        {
+            mIsPetOwner = true;
+        }
+
+        getActivity().getActionBar().setTitle(mTitle);
+        this.mMenu.findItem(R.id.delete_pet_action).setVisible(mIsPetOwner);
+        this.mMenu.findItem(R.id.edit_pet_action).setVisible(mIsPetOwner);
+
+    }
+
+    @Override
+    public void onPetGetAdFailed() {
+        Toast.makeText(this.getActivity().getApplicationContext(), "An error occurred while getting pet ad", Toast.LENGTH_LONG).show();
+        getFragmentManager().popBackStack();
+
+    }
+
+    @Override
+    public void onPetDeleteAdSuccess() {
+        Toast.makeText(this.getActivity().getApplicationContext(), "Pet ad deleted successfully", Toast.LENGTH_LONG).show();
+        getFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onPetDeleteAdFailed() {
+        Toast.makeText(this.getActivity().getApplicationContext(), "An error occurred while tried to delete pet ad", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onRestCallError(Throwable t) {
+        Toast.makeText(this.getActivity().getApplicationContext(), "An error occurred while getting pet ad", Toast.LENGTH_LONG).show();
+        getFragmentManager().popBackStack();
     }
 
     /**

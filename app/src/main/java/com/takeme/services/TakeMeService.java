@@ -1,5 +1,6 @@
 package com.takeme.services;
 
+import com.takeme.models.PetAdd2Wishlist;
 import com.takeme.models.Pet;
 import com.takeme.models.UserToken;
 import com.takeme.models.User;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit.Call;
-import retrofit.Callback;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -38,17 +38,21 @@ public interface TakeMeService {
     Call<List<Pet>> findPets(@QueryMap Map<String,String> filters);
 
     @GET("/ad/{id}")
-    Call<List<Pet>> findPetById(@Query("userId") Long token, @Path("id") Long petId);
+    Call<Pet> findPetById(@Path("id") Long petId, @Query("userId") Long token);
 
     @POST("/ad")
-    Call<PostActionResponse> createPetAd(@Query("userId") Long token, @Body Pet pet);
-
-    @DELETE("/ad/{id}")
-    Call<PostActionResponse> deletePetAd(@Query("userId") Long token, @Path("id") Long petId);
+    Call<PostActionResponse> createPetAd(@Body Pet pet,@Query("userId") Long token);
 
     @PUT("/ad/{id}")
-    Call<PostActionResponse> updatePetAd(@Query("userId") Long token, @Path("id") Long petId, @Body Pet pet);
+    Call<Object> updatePetAd(@Path("id") Long petId,@Body Pet pet,@Query("userId") Long token);
 
+    @DELETE("/ad/{id}")
+    Call<Object> deletePetAd(@Path("id") Long petId,@Query("userId") Long token);
 
+    @POST("user/{userId}/wishlist")
+    Call<Object> addPetAd2WishList(@Path("userId") Long token, @Body PetAdd2Wishlist petAdd2Wishlist);
+
+    @DELETE("user/{userId}/wishlist/{petId}")
+    Call<Object> deletePetAdFromWishList(@Path("userId") Long token, @Path("petId") Long petId);
 
 }

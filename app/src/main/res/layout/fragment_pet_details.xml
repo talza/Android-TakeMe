@@ -194,13 +194,7 @@
                         android:gravity="top"
                         android:layout_gravity="top"
                         android:textSize="15sp"/>
-                    <TextView
-                        android:id="@+id/tvOwnerAddress"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="top"
-                        android:layout_gravity="top"
-                        android:textSize="15sp"/>
+
                     <TextView
                         android:id="@+id/tvOwnerEmail"
                         android:layout_width="match_parent"

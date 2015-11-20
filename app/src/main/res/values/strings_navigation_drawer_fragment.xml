@@ -2,7 +2,7 @@
 <resources>
 
     <string-array name="actions">
-        <item>Search</item>
+        <item>Pets List</item>
         <item>My pets</item>
         <item>Wish List</item>
         <item>My Account</item>

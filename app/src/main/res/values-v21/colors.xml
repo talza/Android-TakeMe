@@ -6,7 +6,7 @@
     <color name="light">#080008</color>
     <color name="accent">#0000FF</color>
 
-    <item name="purple" type="color">#3F51B5</item>
+    <item name="red" type="color">#FF7E82</item>
     <item name="color_action_bar" type="color">#FFFFFF</item>
     <item name="app_background" type="color">#FFFFFF</item>
 

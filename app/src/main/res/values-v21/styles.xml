@@ -20,7 +20,7 @@
     </style>
 
     <style name="TakeMeTheme.Buttons" parent="@android:style/Widget.Material.Light.Button">
-        <item name="android:background">@color/purple</item>
+        <item name="android:background">@color/red</item>
         <item name="android:radius">10dp</item>
         <item name="android:textColor">@color/app_background</item>
         <item name="android:textStyle">bold</item>

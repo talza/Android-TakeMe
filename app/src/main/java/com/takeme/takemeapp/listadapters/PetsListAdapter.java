@@ -12,7 +12,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.takeme.models.Pet;
-import com.takeme.services.TakeMeUtil;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
 
@@ -23,14 +22,14 @@ import java.util.List;
  */
 public class PetsListAdapter extends ArrayAdapter<Pet>
 {
-
+    WishListClickListener wishListClickListener;
     List<Pet> lsPets;
     View convertView;
     private TakeMeApplication meApplication;
 
-    public PetsListAdapter(Context context, List<Pet> lsPets) {
+    public PetsListAdapter(Context context, List<Pet> lsPets, WishListClickListener wishListClickListener) {
         super(context, R.layout.pet_list_item, lsPets);
-
+        this.wishListClickListener = wishListClickListener;
         this.lsPets = lsPets;
     }
 
@@ -70,13 +69,17 @@ public class PetsListAdapter extends ArrayAdapter<Pet>
                 if (parent != null ) {
 
                     Pet pet = getItem((Integer) v.getTag());
+                    wishListClickListener.onWishListClicked(pet);
 
-                    pet.setIsWishInList(!pet.isWishInList());
                 }
             }
         });
 
         return convertView;
+    }
+
+    public interface WishListClickListener{
+        public void onWishListClicked(Pet pet);
     }
 
 }

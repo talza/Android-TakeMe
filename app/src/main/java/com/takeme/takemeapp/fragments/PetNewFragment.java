@@ -33,6 +33,7 @@ import com.takeme.models.Pet;
 import com.takeme.services.AwsS3Provider;
 import com.takeme.services.Constants;
 import com.takeme.services.PetCreateAdTask;
+import com.takeme.services.PetUpdateAdTask;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
 
@@ -43,12 +44,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class PetNewFragment extends Fragment
-        implements View.OnClickListener,
-                   AwsS3Provider.FileUploadCallBack,
-                   PetCreateAdTask.PetCreateAdResponse{
+public class PetNewFragment extends Fragment implements
+        View.OnClickListener,
+        AwsS3Provider.FileUploadCallBack,
+        PetCreateAdTask.PetCreateAdResponse,
+        PetUpdateAdTask.PetUpdateAdResponse{
 
-    static final int REQUEST_IMAGE_CAPTURE = 1;
+    private Constants.PetUpdateMode mPetUpdateMode;
 
     private ImageView petPicture;
     private String mCurrentPhotoPath;
@@ -72,17 +74,42 @@ public class PetNewFragment extends Fragment
     private TakeMeApplication meApplication;
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
+    public static PetNewFragment newInstance(Long petId,
+                                             String petName,
+                                             int petType,
+                                             int petSize,
+                                             int petAge,
+                                             int petGender,
+                                             String petDesc,
+                                             String petPicUrl) {
+
+        PetNewFragment fragment = new PetNewFragment();
+        Bundle args = new Bundle();
+        args.putString(Constants.PET_UPDATE_MODE, Constants.PetUpdateMode.UPDATE.toString());
+        args.putLong(Constants.PET_UPDATE_ID, petId);
+        args.putString(Constants.PET_UPDATE_NAME, petName);
+        args.putInt(Constants.PET_UPDATE_TYPE, petType);
+        args.putInt(Constants.PET_UPDATE_SIZE, petSize);
+        args.putInt(Constants.PET_UPDATE_AGE, petAge);
+        args.putInt(Constants.PET_UPDATE_GENDER, petGender);
+        args.putString(Constants.PET_UPDATE_DESC, petDesc);
+        args.putString(Constants.PET_UPDATE_PIC_URL, petPicUrl);
+
+
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @return A new instance of fragment PetDetailsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static PetNewFragment newInstance() {
         PetNewFragment fragment = new PetNewFragment();
         Bundle args = new Bundle();
-//        args.putInt(ARG_VIEW_MODE, mViewMode);
+        args.putString(Constants.PET_UPDATE_MODE, Constants.PetUpdateMode.CREATE.toString());
         fragment.setArguments(args);
         return fragment;
     }
@@ -105,7 +132,9 @@ public class PetNewFragment extends Fragment
 
         setHasOptionsMenu(true);
 
-
+        if (getArguments() != null) {
+            mPetUpdateMode = Constants.PetUpdateMode.valueOf(getArguments().getString(Constants.PET_UPDATE_MODE));
+        }
     }
 
     @Override
@@ -133,6 +162,23 @@ public class PetNewFragment extends Fragment
         setGenderAdapter();
 
         getActivity().getActionBar().setTitle("Add Pet");
+
+        if(mPetUpdateMode != null) {
+            Long petId = getArguments().getLong(Constants.PET_UPDATE_ID);
+
+            petNameEditText.setText(getArguments().getString(Constants.PET_UPDATE_NAME));
+            spType.setSelection(getArguments().getInt(Constants.PET_UPDATE_TYPE));
+            spSize.setSelection(getArguments().getInt(Constants.PET_UPDATE_SIZE));
+            spAge.setSelection(getArguments().getInt(Constants.PET_UPDATE_AGE));
+            spGender.setSelection(getArguments().getInt(Constants.PET_UPDATE_GENDER));
+            petDescEditText.setText(getArguments().getString(Constants.PET_UPDATE_DESC));
+            mCurrentPhotoPath = getArguments().getString(Constants.PET_UPDATE_PIC_URL);
+            Picasso.with(getActivity().getApplicationContext()).load(mCurrentPhotoPath)
+                    .placeholder(R.drawable.ic_take_me)
+                    .error(R.drawable.ic_take_me)
+                    .centerCrop().fit()
+                    .into(petPicture);
+        }
 
         return mPetNewView;
     }
@@ -292,16 +338,16 @@ public class PetNewFragment extends Fragment
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                     Uri.fromFile(pictureFile));
 
-            startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+            startActivityForResult(takePictureIntent, Constants.REQUEST_IMAGE_CAPTURE);
         }
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
-        super.onActivityResult(requestCode, resultCode,data );
+        super.onActivityResult(requestCode, resultCode,data);
 
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
+        if (requestCode == Constants.REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK) {
 
             //Load the picture to view and cache.
             petPicture.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -400,21 +446,28 @@ public class PetNewFragment extends Fragment
         //After image uploaded, create the ad
         Pet pet = new Pet();
         pet.setPetName(petNameEditText.getText().toString());
-        pet.setPetType(String.valueOf(spType.getSelectedItemPosition() + 1));
-        pet.setPetSize(String.valueOf(spSize.getSelectedItemPosition() + 1));
-        pet.setPetAge(String.valueOf(spAge.getSelectedItemPosition() + 1));
-        pet.setPetGender(String.valueOf(spGender.getSelectedItemPosition() + 1));
+        pet.setPetType(spType.getSelectedItemPosition() + 1);
+        pet.setPetSize(spSize.getSelectedItemPosition() + 1);
+        pet.setPetAge(spAge.getSelectedItemPosition() + 1);
+        pet.setPetGender(spGender.getSelectedItemPosition() + 1);
         pet.setPetDescription(petDescEditText.getText().toString());
         pet.setPetPhotoUrl(uploadResult);
 
-        PetCreateAdTask petCreateAdTask = new PetCreateAdTask(meApplication.getCurrentUser(),pet,this);
-        petCreateAdTask.createPetAd();
+        if (mPetUpdateMode.equals(Constants.PetUpdateMode.CREATE)) {
+            PetCreateAdTask petCreateAdTask = new PetCreateAdTask(meApplication.getCurrentUser(), pet, this);
+            petCreateAdTask.createPetAd();
+        }else if(mPetUpdateMode.equals(Constants.PetUpdateMode.UPDATE)){
+            pet.setId(getArguments().getLong(Constants.PET_UPDATE_ID));
+            PetUpdateAdTask petUpdateAdTask = new PetUpdateAdTask(meApplication.getCurrentUser(),pet,this);
+            petUpdateAdTask.updatePetAd();
+        }
+
     }
 
     @Override
     public void onUploadToS3Failed() {
         showProgress(false);
-        Toast.makeText(meApplication.getApplicationContext(),"Error occurred trying to Created pet ad",Toast.LENGTH_LONG);
+        Toast.makeText(meApplication.getApplicationContext(),"Error occurred trying to save pet ad",Toast.LENGTH_LONG);
         getFragmentManager().popBackStack();
     }
 
@@ -433,9 +486,23 @@ public class PetNewFragment extends Fragment
     }
 
     @Override
+    public void onPetUpdateAdSuccess() {
+        showProgress(false);
+        Toast.makeText(getActivity().getApplicationContext(), "Pet ad updated successfully", Toast.LENGTH_LONG).show();
+        getFragmentManager().popBackStack();
+    }
+
+    @Override
+    public void onPetUpdateAdFailed() {
+        showProgress(false);
+        Toast.makeText(getActivity().getApplicationContext(), "Error occurred trying to updated pet ad", Toast.LENGTH_LONG).show();
+        getFragmentManager().popBackStack();
+    }
+
+    @Override
     public void onRestCallError(Throwable t) {
         showProgress(false);
-        Toast.makeText(getActivity().getApplicationContext(), "Error occurred trying to Created pet ad", Toast.LENGTH_LONG).show();
+        Toast.makeText(getActivity().getApplicationContext(), "Connection Error", Toast.LENGTH_LONG).show();
         getFragmentManager().popBackStack();
     }
 

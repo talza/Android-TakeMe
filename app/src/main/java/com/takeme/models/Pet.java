@@ -7,24 +7,22 @@ import com.takeme.services.TakeMeUtil;
  */
 public class Pet
 {
-    private String id;
+    private Long id;
     private String petName;
-    private String petGender;
-    private String petAge;
-    private String petSize;
-    private String petType;
+    private Integer petGender;
+    private Integer petAge;
+    private Integer petSize;
+    private Integer petType;
     private String petPhotoUrl;
     private String petDescription;
     private boolean isWishInList;
-    private PetOwner ownerDetails;
+    private PetOwner petOwner;
 
     public Pet() {
 
     }
 
-    public Pet(String id, String petName, String petGender, String petAge, String petSize,
-               String petType, String petPhotoUrl, String petDescription, boolean isWishInList,
-               PetOwner ownerDetails) {
+    public Pet(Long id, String petName, Integer petGender, Integer petAge, Integer petSize, Integer petType, String petPhotoUrl, String petDescription, boolean isWishInList, PetOwner petOwner) {
         this.id = id;
         this.petName = petName;
         this.petGender = petGender;
@@ -34,14 +32,14 @@ public class Pet
         this.petPhotoUrl = petPhotoUrl;
         this.petDescription = petDescription;
         this.isWishInList = isWishInList;
-        this.ownerDetails = ownerDetails;
+        this.petOwner = petOwner;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
@@ -61,34 +59,34 @@ public class Pet
         this.petDescription = petDescription;
     }
 
-    public String getPetAge() {
+    public Integer getPetAge() {
         return petAge;
     }
 
-    public void setPetAge(String petAge) {
+    public void setPetAge(Integer petAge) {
         this.petAge = petAge;
     }
 
-    public String getPetGender() {
+    public Integer getPetGender() {
         return petGender;
     }
 
-    public void setPetGender(String petGender) {
+    public void setPetGender(Integer petGender) {
         this.petGender = petGender;
     }
 
-    public String getPetSize() {
+    public Integer getPetSize() {
         return petSize;
     }
 
-    public void setPetSize(String petSize) {
+    public void setPetSize(Integer petSize) {
         this.petSize = petSize;
     }
-    public String getPetType() {
+    public Integer getPetType() {
         return this.petType;
     }
 
-    public void setPetType(String petType){
+    public void setPetType(Integer petType){
         this.petType = petType;
     }
 
@@ -100,12 +98,12 @@ public class Pet
         this.petPhotoUrl = petPhotoUrl;
     }
 
-    public PetOwner getOwnerDetails() {
-        return ownerDetails;
+    public PetOwner getPetOwner() {
+        return petOwner;
     }
 
-    public void setOwnerDetails(PetOwner ownerDetails) {
-        this.ownerDetails = ownerDetails;
+    public void setPetOwner(PetOwner petOwner) {
+        this.petOwner = petOwner;
     }
 
     public boolean isWishInList() {

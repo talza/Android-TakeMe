@@ -18,6 +18,8 @@ import android.widget.Toast;
 
 import com.takeme.models.Pet;
 import com.takeme.services.Constants;
+import com.takeme.services.PetAdd2WishListTask;
+import com.takeme.services.PetDeleteFromWishListTask;
 import com.takeme.services.PetsFindAdTask;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
@@ -35,9 +37,10 @@ import java.util.List;
  * Use the {@link PetsListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class PetsListFragment extends Fragment
-        implements PetsSearchFragment.OnSearchClicked,
-        PetsFindAdTask.PetsGetListResponse{
+public class PetsListFragment extends Fragment implements
+        PetsSearchFragment.OnSearchClicked,
+        PetsFindAdTask.PetsGetListResponse,
+        PetsListAdapter.WishListClickListener{
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private Constants.PetsListMode petListMode;
@@ -110,6 +113,7 @@ public class PetsListFragment extends Fragment
                 wishList = false;
                 break;
             case WishList:
+                token = meApplication.getCurrentUser();
                 this.wishList = true;
                 break;
         }
@@ -131,17 +135,16 @@ public class PetsListFragment extends Fragment
         View view = inflater.inflate(R.layout.fragment_pets_list, container, false);
         this.mPetsListView = (ListView) view.findViewById(R.id.lvPets);
 
-        petsListAdapter = new PetsListAdapter(view.getContext(), this.mPetsList);
+        petsListAdapter = new PetsListAdapter(view.getContext(), this.mPetsList,this);
         this.mPetsListView.setAdapter(petsListAdapter);
 
         this.mPetsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                Pet item = (Pet) parent.getSelectedItem();
+                Pet item = (Pet) parent.getItemAtPosition(position);
 
-                FragmentManager fragmentManager = getFragmentManager();
-                Fragment fragment = PetDetailsFragment.newInstance();
+                Fragment fragment = PetDetailsFragment.newInstance(item.getId().intValue());
 
                 // Create new  transaction
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -268,6 +271,21 @@ public class PetsListFragment extends Fragment
     public void onRestCallError(Throwable t) {
         Toast.makeText(this.getActivity().getApplicationContext(), "An error occurred while getting pets", Toast.LENGTH_LONG).show();
 
+    }
+
+    @Override
+    public void onWishListClicked(Pet pet) {
+        pet.setIsWishInList(!pet.isWishInList());
+
+        if(pet.isWishInList()){
+            PetAdd2WishListTask petAdd2WishListTask =
+                    new PetAdd2WishListTask(meApplication.getCurrentUser(),pet.getId());
+            petAdd2WishListTask.add2WishList();
+        }else{
+            PetDeleteFromWishListTask petDeleteFromWishListTask =
+                    new PetDeleteFromWishListTask(meApplication.getCurrentUser(),pet.getId());
+            petDeleteFromWishListTask.deleteFromWishList();
+        }
     }
 
     /**

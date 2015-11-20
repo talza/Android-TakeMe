@@ -66,7 +66,9 @@ public class PetsFindAdTask implements Callback<List<Pet>> {
              hmFilter.put("petGender", String.valueOf(this.gender));
          }
 
-         hmFilter.put("wishList", String.valueOf(this.wishList));
+         if(this.wishList) {
+             hmFilter.put("inWishList", String.valueOf(this.wishList));
+         }
 
         Call<List<Pet>> call =
                 TakeMeRestClient.getInstance().service().findPets(hmFilter);

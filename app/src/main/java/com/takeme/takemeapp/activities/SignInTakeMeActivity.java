@@ -91,8 +91,8 @@ public class SignInTakeMeActivity extends Activity implements UserSignInTask.Use
         this.mApp.setCurrentUser(id.getId());
         Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
         startActivity(intentToMain);
-
         finish();
+
     }
 
     @Override

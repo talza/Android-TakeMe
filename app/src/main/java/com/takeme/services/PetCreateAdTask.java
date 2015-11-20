@@ -25,7 +25,7 @@ public class PetCreateAdTask implements Callback<PostActionResponse> {
 
     public void createPetAd(){
 
-        Call<PostActionResponse> call = TakeMeRestClient.getInstance().service().createPetAd(this.token, this.pet);
+        Call<PostActionResponse> call = TakeMeRestClient.getInstance().service().createPetAd(this.pet,this.token);
         call.enqueue(this);
     }
 

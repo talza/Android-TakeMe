@@ -4,6 +4,7 @@ package com.takeme.models;
  * Created by tzamir on 10/30/2015.
  */
 public class PetOwner {
+    private Long ownerId;
     private String ownerFirstName;
     private String ownerLastName;
     private String ownerEmail;
@@ -12,10 +13,20 @@ public class PetOwner {
     public PetOwner() {
     }
 
-    public PetOwner(String ownerFirstName, String ownerEmail, String ownerPhone) {
+    public PetOwner(Long ownerId, String ownerFirstName,String ownerLastName, String ownerEmail, String ownerPhone) {
+        this.ownerId = ownerId;
         this.ownerFirstName = ownerFirstName;
+        this.ownerLastName = ownerLastName;
         this.ownerEmail = ownerEmail;
         this.ownerPhone = ownerPhone;
+    }
+
+    public Long getOwnerId() {
+        return ownerId;
+    }
+
+    public void setOwnerId(Long ownerId) {
+        this.ownerId = ownerId;
     }
 
     public String getOwnerLastName() {
