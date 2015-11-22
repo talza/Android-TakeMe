@@ -39,6 +39,12 @@ public class MainTakeMeActivity extends Activity
      */
     private CharSequence mTitle;
 
+    private Fragment mPetListFragment;
+    private Fragment mMyPetFragment;
+    private Fragment mWishListFragment;
+    private Fragment mMyAccountFragment;
+    private Fragment mCurrentFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,54 +53,67 @@ public class MainTakeMeActivity extends Activity
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
 
-        mTitle = getString(R.string.title_search_view);
+        mTitle = getTitle();
 
         // Set up the drawer.
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-       // getActionBar().setLogo(R.drawable.ic_take_me);
-       // getActionBar().setDisplayUseLogoEnabled(true);
-       // getActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
     public void onNavigationDrawerItemSelected(int position) {
 
         // update the main content by replacing fragments
-        Fragment fragment = null;
 
+        Fragment oldFragment = this.mCurrentFragment;
         switch(position) {
             default:
             case 0:
                 mTitle = (getString(R.string.title_pets_List));
-                fragment = PetsListFragment.newInstance(Constants.PetsListMode.PetsList);
+                if(mPetListFragment == null){
+                    mPetListFragment = PetsListFragment.newInstance(Constants.PetsListMode.PetsList);
+                }
+                mCurrentFragment = mPetListFragment;
                 break;
             case 1:
                 mTitle = getString(R.string.title_my_pets_view);
-                fragment = PetsListFragment.newInstance(Constants.PetsListMode.MyPets);
+                if(this.mMyPetFragment == null){
+                    this.mMyPetFragment = PetsListFragment.newInstance(Constants.PetsListMode.MyPets);
+                }
+                mCurrentFragment = this.mMyPetFragment;
                 break;
             case 2:
+                if(this.mWishListFragment == null) {
+                    this.mWishListFragment = PetsListFragment.newInstance(Constants.PetsListMode.WishList);
+                }
                 mTitle = getString(R.string.title_wish_list_view);
-                fragment = PetsListFragment.newInstance(Constants.PetsListMode.WishList);
+                mCurrentFragment = PetsListFragment.newInstance(Constants.PetsListMode.WishList);
                 break;
             case 3:
                 mTitle = getString(R.string.title_my_account_view);
-                fragment = UserDetailsFragment.newInstance(null,null);
+                if(this.mMyAccountFragment == null){
+                    this.mMyAccountFragment = UserDetailsFragment.newInstance();
+                }
+                mCurrentFragment = this.mMyAccountFragment;
         }
 
         // Create new  transaction
+
         FragmentManager fragmentManager = getFragmentManager();
+        //fragmentManager.popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
         // Replace whatever is in the fragment_container view with this fragment,
         // and add the transaction to the back stack
-        transaction.replace(R.id.container, fragment);
-        transaction.addToBackStack(null);
+        transaction.replace(R.id.container, mCurrentFragment);
+        //transaction.addToBackStack(null);
 
         // Commit the transaction
         transaction.commit();
+
     }
 
     public void restoreActionBar() {

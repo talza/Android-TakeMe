@@ -63,10 +63,10 @@ public class PetDetailsFragment extends Fragment implements
      * @return A new instance of fragment PetDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static PetDetailsFragment newInstance(int petId) {
+    public static PetDetailsFragment newInstance(Long petId) {
         PetDetailsFragment fragment = new PetDetailsFragment();
         Bundle args = new Bundle();
-        args.putInt(Constants.PET_DETAILS_ID,petId);
+        args.putLong(Constants.PET_DETAILS_ID, petId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -85,6 +85,16 @@ public class PetDetailsFragment extends Fragment implements
 
         setHasOptionsMenu(true);
 
+        pet = new Pet();
+
+        if(savedInstanceState != null){
+            pet.setId(savedInstanceState.getLong(Constants.PET_DETAILS_ID));
+        }else {
+
+            pet.setId(getArguments().getLong(Constants.PET_DETAILS_ID));
+        }
+
+
         meApplication = (TakeMeApplication)getActivity().getApplication();
 
     }
@@ -92,6 +102,7 @@ public class PetDetailsFragment extends Fragment implements
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_pet_details, container, false);
 
@@ -105,20 +116,23 @@ public class PetDetailsFragment extends Fragment implements
         ownerEmail = (TextView) view.findViewById(R.id.tvOwnerEmail);
         ownerPhone = (TextView) view.findViewById(R.id.tvOwnerPhone);
 
-        if(getArguments() != null){
-            int petId = getArguments().getInt(Constants.PET_DETAILS_ID);
-            PetGetAdTask petGetAdTask = new PetGetAdTask(meApplication.getCurrentUser(),new Long(petId),this);
+        if(this.pet.getId() != null) {
+            PetGetAdTask petGetAdTask =
+                    new PetGetAdTask(meApplication.getCurrentUser(),
+                    this.pet.getId(),
+                    this);
             petGetAdTask.getPetAd();
         }
+
 
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
+    @Override
+    public void onSaveInstanceState(Bundle state) {
+        super.onSaveInstanceState(state);
+
+        state.putLong(Constants.PET_DETAILS_ID,this.pet.getId());
     }
 
     @Override
@@ -201,7 +215,7 @@ public class PetDetailsFragment extends Fragment implements
     public void onPetGetAdSuccess(Pet pet) {
         this.pet = pet;
         mTitle = pet.getPetName();
-        petAge.setText(pet.getPetAge());
+        petAge.setText(pet.getPetAge().toString());
         petGender.setText(TakeMeUtil.getInstance().getGenderByIndex(Integer.valueOf(pet.getPetGender())));
         petSize.setText(TakeMeUtil.getInstance().getSizeByIndex(Integer.valueOf(pet.getPetSize())));
         petDesc.setText(pet.getPetDescription());
@@ -219,9 +233,19 @@ public class PetDetailsFragment extends Fragment implements
             mIsPetOwner = true;
         }
 
-        getActivity().getActionBar().setTitle(mTitle);
-        this.mMenu.findItem(R.id.delete_pet_action).setVisible(mIsPetOwner);
-        this.mMenu.findItem(R.id.edit_pet_action).setVisible(mIsPetOwner);
+        if(getActivity() != null) {
+            getActivity().getActionBar().setTitle(mTitle);
+        }
+
+        if(this.mMenu != null) {
+            if (this.mMenu.findItem(R.id.delete_pet_action) != null) {
+                this.mMenu.findItem(R.id.delete_pet_action).setVisible(mIsPetOwner);
+            }
+            if (this.mMenu.findItem(R.id.edit_pet_action) != null) {
+                this.mMenu.findItem(R.id.edit_pet_action).setVisible(mIsPetOwner);
+            }
+        }
+
 
     }
 

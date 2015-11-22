@@ -101,17 +101,6 @@ public class NavigationDrawerFragment extends Fragment {
             }
         });
 
-//        mDrawerListView.setAdapter(new  ArrayAdapter<String>(
-//                getActionBar().getThemedContext(),
-//                android.R.layout.simple_list_item_activated_1,
-//                android.R.id.text1,
-//                new String[]{
-//                        getString(R.string.title_main_view),
-//                        getString(R.string.title_my_pets_view),
-//                        getString(R.string.title_wish_list_view),
-//                        getString(R.string.title_sign_out)
-//                }));
-
         String[] actions = getResources().getStringArray(R.array.actions);
 
         TypedArray tArray = getResources().obtainTypedArray(R.array.images);

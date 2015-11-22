@@ -25,12 +25,13 @@ public class UserGetDetailsTask implements Callback<User> {
 
     @Override
     public void onResponse(Response<User> response) {
-
-        if (response.isSuccess()){
-            userGetDetailsResponse.onUserGetDetailsSuccess(response.body());
-        }
-        else{
-            userGetDetailsResponse.onUserGetDetailsFailed();
+        if(userGetDetailsResponse != null){
+            if (response.isSuccess()){
+                userGetDetailsResponse.onUserGetDetailsSuccess(response.body());
+            }
+            else{
+                userGetDetailsResponse.onUserGetDetailsFailed();
+            }
         }
 
     }

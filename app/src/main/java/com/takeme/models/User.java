@@ -15,6 +15,7 @@ public class User {
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    private String facebookToken;
 
     public String getFirstName() {
         return this.firstName;
@@ -56,4 +57,11 @@ public class User {
         this.phoneNumber = phoneNumber;
     }
 
+    public String getFacebookToken() {
+        return facebookToken;
+    }
+
+    public void setFacebookToken(String facebookToken) {
+        this.facebookToken = facebookToken;
+    }
 }

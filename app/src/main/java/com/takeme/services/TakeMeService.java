@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit.Call;
+import retrofit.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;
@@ -28,25 +29,31 @@ public interface TakeMeService {
     @POST("user/signUp")
     Call<UserToken> signUp(@Body User user);
 
+    @POST("user/signViaFacebook")
+    Call<UserToken> signViaFacebook(@Body User user);
+
     @GET("user/{id}")
     Call<User> getUser(@Path("id") Long token);
+
+    @GET("/user")
+    Call<UserToken> getUserByFacbook(@Query("facebookToken") String facebookToken);
 
     @PUT("user/{id}")
     Call<PostActionResponse> updateUser(@Path("id") Long token ,@Body User user);
 
-    @GET("/ad")
+    @GET("ad")
     Call<List<Pet>> findPets(@QueryMap Map<String,String> filters);
 
-    @GET("/ad/{id}")
+    @GET("ad/{id}")
     Call<Pet> findPetById(@Path("id") Long petId, @Query("userId") Long token);
 
-    @POST("/ad")
+    @POST("ad")
     Call<PostActionResponse> createPetAd(@Body Pet pet,@Query("userId") Long token);
 
-    @PUT("/ad/{id}")
+    @PUT("ad/{id}")
     Call<Object> updatePetAd(@Path("id") Long petId,@Body Pet pet,@Query("userId") Long token);
 
-    @DELETE("/ad/{id}")
+    @DELETE("ad/{id}")
     Call<Object> deletePetAd(@Path("id") Long petId,@Query("userId") Long token);
 
     @POST("user/{userId}/wishlist")

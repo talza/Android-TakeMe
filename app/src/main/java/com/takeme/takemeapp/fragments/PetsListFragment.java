@@ -45,6 +45,9 @@ public class PetsListFragment extends Fragment implements
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private Constants.PetsListMode petListMode;
 
+    private static final String STATE_ACTIVATED_POSITION = "activated_position";
+
+
     private Long token;
     private int type;
     private int size;
@@ -52,6 +55,7 @@ public class PetsListFragment extends Fragment implements
     private int ageTo;
     private int gender;
     private boolean wishList;
+    private boolean isMyPet;
 
     private List mPetsList;
     private ListView mPetsListView;
@@ -64,6 +68,7 @@ public class PetsListFragment extends Fragment implements
 
     private TakeMeApplication meApplication;
 
+    private int mActivatedPosition = ListView.INVALID_POSITION;
 
     /**
      * Use this factory method to create a new instance of
@@ -94,7 +99,6 @@ public class PetsListFragment extends Fragment implements
 
         // Indicate that this fragment would like to influence the set of actions in the action bar.
         setHasOptionsMenu(true);
-        getActivity().setTitle(getString(R.string.title_pets_List));
 
         if (getArguments() != null) {
             petListMode = Constants.PetsListMode.valueOf(getArguments().getString(Constants.PET_LIST_MODE));
@@ -105,21 +109,23 @@ public class PetsListFragment extends Fragment implements
         switch (petListMode)
         {
             case PetsList:
+                getActivity().setTitle(getString(R.string.title_pets_List));
                 token = null;
                 wishList = false;
+                isMyPet = false;
                 break;
             case MyPets:
-                token = meApplication.getCurrentUser();
+                getActivity().setTitle(getString(R.string.title_my_pets_view));
                 wishList = false;
+                isMyPet = true;
                 break;
             case WishList:
-                token = meApplication.getCurrentUser();
+                getActivity().setTitle(getString(R.string.title_wish_list_view));
+
                 this.wishList = true;
+                isMyPet = false;
                 break;
         }
-
-        PetsFindAdTask petsFindTask = new PetsFindAdTask(token,this.type,this.size,this.ageFrom,this.ageTo,this.gender,this.wishList,this);
-        petsFindTask.getPetsList();
 
         // populate data
         this.mPetsList = new ArrayList<Pet>();
@@ -141,10 +147,10 @@ public class PetsListFragment extends Fragment implements
         this.mPetsListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+                mActivatedPosition = position;
                 Pet item = (Pet) parent.getItemAtPosition(position);
 
-                Fragment fragment = PetDetailsFragment.newInstance(item.getId().intValue());
+                Fragment fragment = PetDetailsFragment.newInstance(item.getId());
 
                 // Create new  transaction
                 FragmentTransaction transaction = getFragmentManager().beginTransaction();
@@ -159,16 +165,35 @@ public class PetsListFragment extends Fragment implements
 
             }
         });
+
+        PetsFindAdTask petsFindTask =
+                new PetsFindAdTask(meApplication.getCurrentUser(),
+                        this.type,
+                        this.size,
+                        this.ageFrom,
+                        this.ageTo,
+                        this.gender,
+                        this.wishList,
+                        isMyPet,
+                        this);
+
+        petsFindTask.getPetsList();
+
         // Inflate the layout for this fragment
         return  view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Restore the previously serialized activated item position.
+        if (savedInstanceState != null
+                && savedInstanceState.containsKey(STATE_ACTIVATED_POSITION)) {
+            setActivatedPosition(savedInstanceState.getInt(STATE_ACTIVATED_POSITION));
         }
     }
+
 
     @Override
     public void onAttach(Activity activity) {
@@ -244,6 +269,7 @@ public class PetsListFragment extends Fragment implements
                                                      this.ageTo,
                                                      this.gender,
                                                      this.wishList,
+                                                     this.isMyPet,
                                                      this);
         petsFindTask.getPetsList();
     }
@@ -275,9 +301,9 @@ public class PetsListFragment extends Fragment implements
 
     @Override
     public void onWishListClicked(Pet pet) {
-        pet.setIsWishInList(!pet.isWishInList());
+        pet.setIsWishInList(!pet.isInWishlist());
 
-        if(pet.isWishInList()){
+        if(pet.isInWishlist()){
             PetAdd2WishListTask petAdd2WishListTask =
                     new PetAdd2WishListTask(meApplication.getCurrentUser(),pet.getId());
             petAdd2WishListTask.add2WishList();
@@ -285,6 +311,15 @@ public class PetsListFragment extends Fragment implements
             PetDeleteFromWishListTask petDeleteFromWishListTask =
                     new PetDeleteFromWishListTask(meApplication.getCurrentUser(),pet.getId());
             petDeleteFromWishListTask.deleteFromWishList();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mActivatedPosition != ListView.INVALID_POSITION) {
+            // Serialize and persist the activated item position.
+            outState.putInt(STATE_ACTIVATED_POSITION, mActivatedPosition);
         }
     }
 
@@ -301,6 +336,18 @@ public class PetsListFragment extends Fragment implements
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    private void setActivatedPosition(int position) {
+
+
+        if (position == ListView.INVALID_POSITION) {
+            this.mPetsListView.setItemChecked(mActivatedPosition, false);
+        } else {
+            this.mPetsListView.setItemChecked(position, true);
+        }
+
+        mActivatedPosition = position;
     }
 
 }

@@ -28,12 +28,12 @@ public class PetGetAdTask implements Callback<Pet> {
 
     @Override
     public void onResponse(Response<Pet> response) {
-
-        if (response.isSuccess()){
-            petGetAdResponse.onPetGetAdSuccess(response.body());
-        }
-        else{
-            petGetAdResponse.onPetGetAdFailed();
+        if(petGetAdResponse != null) {
+            if (response.isSuccess()) {
+                petGetAdResponse.onPetGetAdSuccess(response.body());
+            } else {
+                petGetAdResponse.onPetGetAdFailed();
+            }
         }
 
     }

@@ -59,7 +59,7 @@ public class PetsListAdapter extends ArrayAdapter<Pet>
         // Set Wish List Button
         CheckBox petWishListCheckBox = (CheckBox) convertView.findViewById(R.id.cbWishList);
         petWishListCheckBox.setTag(position);
-        petWishListCheckBox.setChecked(pet.isWishInList());
+        petWishListCheckBox.setChecked(pet.isInWishlist());
 
         // Set on click wish list button.
         petWishListCheckBox.setOnClickListener(new View.OnClickListener() {

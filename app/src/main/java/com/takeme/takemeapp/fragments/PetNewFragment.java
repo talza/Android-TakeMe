@@ -70,6 +70,7 @@ public class PetNewFragment extends Fragment implements
     private View newAdFormView;
 
     private boolean pictureTaken = false;
+    private boolean existingPic = false;
 
     private TakeMeApplication meApplication;
     private NavigationDrawerFragment mNavigationDrawerFragment;
@@ -164,8 +165,7 @@ public class PetNewFragment extends Fragment implements
         getActivity().getActionBar().setTitle("Add Pet");
 
         if(mPetUpdateMode != null) {
-            Long petId = getArguments().getLong(Constants.PET_UPDATE_ID);
-
+            existingPic = true;
             petNameEditText.setText(getArguments().getString(Constants.PET_UPDATE_NAME));
             spType.setSelection(getArguments().getInt(Constants.PET_UPDATE_TYPE));
             spSize.setSelection(getArguments().getInt(Constants.PET_UPDATE_SIZE));
@@ -173,6 +173,7 @@ public class PetNewFragment extends Fragment implements
             spGender.setSelection(getArguments().getInt(Constants.PET_UPDATE_GENDER));
             petDescEditText.setText(getArguments().getString(Constants.PET_UPDATE_DESC));
             mCurrentPhotoPath = getArguments().getString(Constants.PET_UPDATE_PIC_URL);
+
             Picasso.with(getActivity().getApplicationContext()).load(mCurrentPhotoPath)
                     .placeholder(R.drawable.ic_take_me)
                     .error(R.drawable.ic_take_me)
@@ -411,7 +412,7 @@ public class PetNewFragment extends Fragment implements
             return false;
         }
 
-        if (!pictureTaken){
+        if (!pictureTaken && !existingPic){
 
             Toast.makeText(getActivity(), getActivity().getString(R.string.msg_error_pet_picture), Toast.LENGTH_LONG).show();
             return false;
@@ -426,7 +427,13 @@ public class PetNewFragment extends Fragment implements
         showProgress(true);
 
         // First try to upload image to s3
-        AwsS3Provider.getInstance().uploadImage(calcPicFileName(), pictureFile, this);
+        if(!existingPic){
+            AwsS3Provider.getInstance().uploadImage(calcPicFileName(), pictureFile, this);
+        }else {
+
+            onUploadToS3Completed(this.mCurrentPhotoPath);
+
+        }
         //onUploadToS3Completed(null);
     }
 

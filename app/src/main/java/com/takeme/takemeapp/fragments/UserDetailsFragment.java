@@ -34,14 +34,6 @@ import com.takeme.takemeapp.activities.StartTakeMeActivity;
  * create an instance of this fragment.
  */
 public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask.UserGetDetailsResponse, UserUpdateTask.UserUpdateResponse{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private OnFragmentInteractionListener mListener;
     private Menu mMenu;
@@ -56,16 +48,12 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment PetDetailsFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static UserDetailsFragment newInstance(String param1, String param2) {
+    public static UserDetailsFragment newInstance() {
         UserDetailsFragment fragment = new UserDetailsFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,10 +72,6 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
 
         this.mApp =  (TakeMeApplication)getActivity().getApplication();
 
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
         setHasOptionsMenu(true);
     }
 

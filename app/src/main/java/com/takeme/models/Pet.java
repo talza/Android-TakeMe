@@ -15,7 +15,7 @@ public class Pet
     private Integer petType;
     private String petPhotoUrl;
     private String petDescription;
-    private boolean isWishInList;
+    private boolean inWishlist;
     private PetOwner petOwner;
 
     public Pet() {
@@ -31,7 +31,7 @@ public class Pet
         this.petType = petType;
         this.petPhotoUrl = petPhotoUrl;
         this.petDescription = petDescription;
-        this.isWishInList = isWishInList;
+        this.inWishlist = isWishInList;
         this.petOwner = petOwner;
     }
 
@@ -106,12 +106,12 @@ public class Pet
         this.petOwner = petOwner;
     }
 
-    public boolean isWishInList() {
-        return isWishInList;
+    public boolean isInWishlist() {
+        return inWishlist;
     }
 
     public void setIsWishInList(boolean isWishInList) {
-        this.isWishInList = isWishInList;
+        this.inWishlist = isWishInList;
     }
 
     public String getShortDescription(){

@@ -27,8 +27,10 @@ public class PetsFindAdTask implements Callback<List<Pet>> {
     private int ageTo;
     private int gender;
     private boolean wishList;
+    private boolean isMyPet;
 
-    public PetsFindAdTask(Long token, Integer type, int size, int ageFrom, int ageTo, int gender, boolean wishList, PetsGetListResponse petsGetListResponse){
+
+    public PetsFindAdTask(Long token, Integer type, int size, int ageFrom, int ageTo, int gender, boolean wishList, boolean isMyPet, PetsGetListResponse petsGetListResponse){
         this.petsGetListResponse = petsGetListResponse;
 
         this.token = token;
@@ -38,6 +40,7 @@ public class PetsFindAdTask implements Callback<List<Pet>> {
         this.ageTo = ageTo;
         this.gender = gender;
         this.wishList = wishList;
+        this.isMyPet = isMyPet;
     }
 
     public void getPetsList(){
@@ -69,6 +72,9 @@ public class PetsFindAdTask implements Callback<List<Pet>> {
          if(this.wishList) {
              hmFilter.put("inWishList", String.valueOf(this.wishList));
          }
+        if(this.isMyPet){
+            hmFilter.put("isMyPet",String.valueOf(isMyPet));
+        }
 
         Call<List<Pet>> call =
                 TakeMeRestClient.getInstance().service().findPets(hmFilter);
@@ -78,11 +84,14 @@ public class PetsFindAdTask implements Callback<List<Pet>> {
     @Override
     public void onResponse(Response<List<Pet>> response) {
 
-        if (response.isSuccess()){
-            petsGetListResponse.onPetsGetListSuccess(response.body());
-        }
-        else{
-            petsGetListResponse.onPetsGetListFailed();
+        if(petsGetListResponse!=null){
+            if (response.isSuccess()){
+                    petsGetListResponse.onPetsGetListSuccess(response.body());
+
+            }
+            else{
+                petsGetListResponse.onPetsGetListFailed();
+            }
         }
 
     }

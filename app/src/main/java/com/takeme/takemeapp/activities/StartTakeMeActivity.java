@@ -21,20 +21,33 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
+import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
+import com.takeme.models.UserToken;
+import com.takeme.services.UserGetByFacebookTask;
+import com.takeme.services.UserSignViaFacebookTask;
 import com.takeme.takemeapp.R;
+import com.takeme.takemeapp.TakeMeApplication;
 
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
-public class StartTakeMeActivity extends Activity {
+public class StartTakeMeActivity extends Activity implements
+        UserSignViaFacebookTask.UserSignViaFacebookResponse,
+        UserGetByFacebookTask.UserGetByFacebookResponse{
 
-    CallbackManager callbackManager;
-    AccessTokenTracker accessTokenTracker;
+    private CallbackManager callbackManager;
+    private AccessTokenTracker accessTokenTracker;
+
+    private TakeMeApplication mApp;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        this.mApp =  (TakeMeApplication)getApplication();
 
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
@@ -47,24 +60,24 @@ public class StartTakeMeActivity extends Activity {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 // App code
-                Toast.makeText(StartTakeMeActivity.this, "Connected via Facebook", Toast.LENGTH_SHORT).show();
-
-
-                GraphRequestAsyncTask graphRequestAsyncTask =
+                GraphRequest graphRequestAsyncTask =
                         GraphRequest.newMeRequest(loginResult.getAccessToken(),
                                 new GraphRequest.GraphJSONObjectCallback() {
 
                                     @Override
                                     public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
-                                        signWithFacebook();
+                                        signWithFacebook(jsonObject);
                                     }
-                                }).executeAsync();
+                                }
+                        );
+                Bundle parameters = new Bundle();
+                parameters.putString("fields", "id, first_name, last_name, email");
+                graphRequestAsyncTask.setParameters(parameters);
+                graphRequestAsyncTask.executeAsync();
             }
 
             @Override
             public void onCancel() {
-                // Do Nothing
-                // Toast.makeText(StartTakeMeActivity.this, "cancel", Toast.LENGTH_SHORT).show();
 
             }
 
@@ -76,25 +89,16 @@ public class StartTakeMeActivity extends Activity {
             }
         });
 
-        accessTokenTracker = new AccessTokenTracker() {
-            @Override
-            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
-                updateWithToken(newAccessToken);
-            }
-        };
-        updateWithToken(AccessToken.getCurrentAccessToken());
-
-//    AccessTokenTracker accessTokenTracker = new AccessTokenTracker() {
+//        accessTokenTracker = new AccessTokenTracker() {
 //            @Override
-//            protected void onCurrentAccessTokenChanged(
-//                    AccessToken oldAccessToken,
-//                    AccessToken currentAccessToken) {
-//                // Set the access token using
-//                // currentAccessToken when it's loaded or set.
+//            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
+//                if(oldAccessToken.equals(newAccessToken)) {
+//      //             updateWithToken(newAccessToken);
+//                }
 //            }
 //        };
-//        // If the access token is available already assign it.
-//        AccessToken accessToken = AccessToken.getCurrentAccessToken();
+
+        signViaFacebookToken(AccessToken.getCurrentAccessToken());
 
     }
 
@@ -134,11 +138,6 @@ public class StartTakeMeActivity extends Activity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -161,39 +160,72 @@ public class StartTakeMeActivity extends Activity {
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
-    private void signWithFacebook()
+    private void signWithFacebook(JSONObject jsonObject)
     {
+        try {
+
+            UserSignViaFacebookTask userSignViaFacebookTask =
+                    new UserSignViaFacebookTask(
+                            jsonObject.getString("email"),
+                            jsonObject.getString("first_name"),
+                            jsonObject.getString("last_name"),
+                            null,
+                            AccessToken.getCurrentAccessToken().getToken(),
+                            this);
+
+            userSignViaFacebookTask.signViaFacebook();
+
+        } catch (JSONException e) {
+            Toast.makeText(StartTakeMeActivity.this, "Can't connected via Facebook", Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
+    private void signViaFacebookToken(AccessToken currentAccessToken) {
+
+        if (currentAccessToken != null) {
+
+            UserGetByFacebookTask userGetByFacebookTask = new UserGetByFacebookTask(currentAccessToken.getToken(),this);
+            userGetByFacebookTask.getUserByFacbook();
+
+        }
+    }
+
+    @Override
+    public void onRegisterSuccess(UserToken id) {
+
+        this.mApp.setCurrentUser(id.getId());
+        Toast.makeText(StartTakeMeActivity.this, "Connected via Facebook", Toast.LENGTH_SHORT).show();
+
         Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
         startActivity(intentToMain);
     }
 
-    private void updateWithToken(AccessToken currentAccessToken) {
+    @Override
+    public void onRegisterFailed() {
+        Toast.makeText(StartTakeMeActivity.this, "Can't connected via Facebook", Toast.LENGTH_SHORT).show();
+        LoginManager.getInstance().logOut();
+    }
 
-        if (currentAccessToken != null) {
-//            new Handler().postDelayed(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//
-//                }
-//            }, SPLASH_TIME_OUT);
+    @Override
+    public void onUserGetByFacebookSuccess(UserToken user) {
+        this.mApp.setCurrentUser(user.getId());
+        Intent intentToMain = new Intent(StartTakeMeActivity.this, MainTakeMeActivity.class);
+        startActivity(intentToMain);
 
-            Intent i = new Intent(StartTakeMeActivity.this, MainTakeMeActivity.class);
-            startActivity(i);
+        finish();
+    }
 
-            finish();
+    @Override
+    public void onUserGetByFacebookFailed() {
+        Toast.makeText(StartTakeMeActivity.this, "Can't connected via Facebook", Toast.LENGTH_SHORT).show();
+      //  LoginManager.getInstance().logOut();
+    }
 
-        } else {
-//            new Handler().postDelayed(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    Intent i = new Intent(SplashScreen.this, Login.class);
-//                    startActivity(i);
-//
-//                    finish();
-//                }
-//            }, SPLASH_TIME_OUT);
-        }
+    @Override
+    public void onRestCallError(Throwable t) {
+        Toast.makeText(StartTakeMeActivity.this, "Connection failed", Toast.LENGTH_SHORT).show();
+        LoginManager.getInstance().logOut();
+
     }
 }
