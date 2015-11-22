@@ -1,6 +1,7 @@
 package com.takeme.takemeapp;
 
 import android.app.Application;
+import android.app.ProgressDialog;
 import android.content.Context;
 
 import com.takeme.services.AwsS3Provider;
@@ -22,6 +23,7 @@ public class TakeMeApplication extends Application { //implements GetAdsUserLike
     public static final int SIGN_UP = 2;
 
     private static Context context;
+    private ProgressDialog progress;
 
     private Long currentUser;
 
@@ -29,6 +31,7 @@ public class TakeMeApplication extends Application { //implements GetAdsUserLike
     public void onCreate() {
         super.onCreate();
         context = this;
+        progress = new ProgressDialog(this.context);
 
         AwsS3Provider.getInstance().init(context);
         TakeMeUtil.getInstance().init(context);
@@ -44,14 +47,18 @@ public class TakeMeApplication extends Application { //implements GetAdsUserLike
     }
 
     public void setCurrentUser(Long currentUser) {
-
         this.currentUser = currentUser;
-//        refreshUserLikes();
     }
 
-    public String getGenderByIndex(int index) {
-        String[] androidStrings = getResources().getStringArray(R.array.pet_gender);
-        return androidStrings[index];
+    public void showProgress(Context context){
+        progress = ProgressDialog.show(context, null,
+                "In Progress...", true);
+    }
+
+    public void hideProgress(){
+        if(progress != null) {
+            progress.dismiss();
+        }
     }
 
 }

@@ -47,8 +47,6 @@ public class PetsListFragment extends Fragment implements
 
     private static final String STATE_ACTIVATED_POSITION = "activated_position";
 
-
-    private Long token;
     private int type;
     private int size;
     private int ageFrom;
@@ -110,20 +108,19 @@ public class PetsListFragment extends Fragment implements
         {
             case PetsList:
                 getActivity().setTitle(getString(R.string.title_pets_List));
-                token = null;
-                wishList = false;
-                isMyPet = false;
+                this.wishList = false;
+                this.isMyPet = false;
                 break;
             case MyPets:
                 getActivity().setTitle(getString(R.string.title_my_pets_view));
-                wishList = false;
-                isMyPet = true;
+                this.wishList = false;
+                this.isMyPet = true;
                 break;
             case WishList:
                 getActivity().setTitle(getString(R.string.title_wish_list_view));
 
                 this.wishList = true;
-                isMyPet = false;
+                this.isMyPet = false;
                 break;
         }
 
@@ -166,6 +163,7 @@ public class PetsListFragment extends Fragment implements
             }
         });
 
+        meApplication.showProgress(this.getActivity());
         PetsFindAdTask petsFindTask =
                 new PetsFindAdTask(meApplication.getCurrentUser(),
                         this.type,
@@ -174,7 +172,7 @@ public class PetsListFragment extends Fragment implements
                         this.ageTo,
                         this.gender,
                         this.wishList,
-                        isMyPet,
+                        this.isMyPet,
                         this);
 
         petsFindTask.getPetsList();
@@ -256,13 +254,14 @@ public class PetsListFragment extends Fragment implements
                                 int animalAgeTo) {
 
        mPetsSearchFragment.dismiss();
+       meApplication.showProgress(this.getActivity());
 
-        this.type = animalType;
-        this.size = animalSize;
-        this.gender = animalGender;
-        this.ageFrom = animalAgeFrom;
-        this.ageTo = animalAgeTo;
-        PetsFindAdTask petsFindTask = new PetsFindAdTask(this.token,
+       this.type = animalType;
+       this.size = animalSize;
+       this.gender = animalGender;
+       this.ageFrom = animalAgeFrom;
+       this.ageTo = animalAgeTo;
+       PetsFindAdTask petsFindTask = new PetsFindAdTask(this.meApplication.getCurrentUser(),
                                                      this.type,
                                                      this.size,
                                                      this.ageFrom,
@@ -284,17 +283,20 @@ public class PetsListFragment extends Fragment implements
 
         mPetsListView.invalidate();
         petsListAdapter.notifyDataSetChanged();
+        meApplication.hideProgress();
 
     }
 
     @Override
     public void onPetsGetListFailed() {
+        meApplication.hideProgress();
         Toast.makeText(this.getActivity().getApplicationContext(),"An error occurred while getting pets",Toast.LENGTH_LONG).show();
 
     }
 
     @Override
     public void onRestCallError(Throwable t) {
+        meApplication.hideProgress();
         Toast.makeText(this.getActivity().getApplicationContext(), "An error occurred while getting pets", Toast.LENGTH_LONG).show();
 
     }

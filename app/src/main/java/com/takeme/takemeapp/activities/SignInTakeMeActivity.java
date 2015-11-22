@@ -49,10 +49,6 @@ public class SignInTakeMeActivity extends Activity implements UserSignInTask.Use
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
 
         return super.onOptionsItemSelected(item);
     }
@@ -68,6 +64,7 @@ public class SignInTakeMeActivity extends Activity implements UserSignInTask.Use
             return;
         }
 
+        mApp.showProgress(this);
         UserSignInTask userSignInTask = new UserSignInTask(etEmail.getText().toString(),etPassword.getText().toString(),this);
         userSignInTask.signIn();
     }
@@ -88,6 +85,7 @@ public class SignInTakeMeActivity extends Activity implements UserSignInTask.Use
 
     @Override
     public void onLoginSuccess(UserToken id) {
+        mApp.hideProgress();
         this.mApp.setCurrentUser(id.getId());
         Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
         startActivity(intentToMain);
@@ -97,11 +95,13 @@ public class SignInTakeMeActivity extends Activity implements UserSignInTask.Use
 
     @Override
     public void onLoginFailed() {
+        mApp.hideProgress();
         Toast.makeText(SignInTakeMeActivity.this, getString(R.string.msg_invalid_email_password), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRestCallError(Throwable t) {
+        mApp.hideProgress();
         Toast.makeText(SignInTakeMeActivity.this, "Connection failed", Toast.LENGTH_SHORT).show();
 
     }

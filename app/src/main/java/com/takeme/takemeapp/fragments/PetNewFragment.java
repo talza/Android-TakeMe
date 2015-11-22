@@ -5,6 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.Fragment;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Build;
@@ -66,7 +67,6 @@ public class PetNewFragment extends Fragment implements
     private Spinner spGender;
 
     private View mPetNewView;
-    private View progressView;
     private View newAdFormView;
 
     private boolean pictureTaken = false;
@@ -144,7 +144,6 @@ public class PetNewFragment extends Fragment implements
 
         // Inflate the layout for this fragment
         mPetNewView = inflater.inflate(R.layout.fragment_pet_new, container, false);
-        progressView = mPetNewView.findViewById(R.id.new_ad_progress);
         newAdFormView = mPetNewView.findViewById(R.id.new_ad_form);
 
         petPicture = (ImageView)mPetNewView.findViewById(R.id.picture);
@@ -197,39 +196,6 @@ public class PetNewFragment extends Fragment implements
 
         super.onCreateOptionsMenu(menu, inflater);
 
-    }
-
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-    public void showProgress(final boolean show) {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-            newAdFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            newAdFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    newAdFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
-
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            progressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
-        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-            progressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            newAdFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        }
     }
 
     //Set the animal types values set.
@@ -384,7 +350,7 @@ public class PetNewFragment extends Fragment implements
 
 
     private void handleError(String errorMessage){
-        showProgress(false);
+        meApplication.hideProgress();
         Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
     }
 
@@ -424,7 +390,7 @@ public class PetNewFragment extends Fragment implements
     private void saveNewAd(){
 
         //Show progress bar until ad saved.
-        showProgress(true);
+        meApplication.showProgress(this.getActivity());
 
         // First try to upload image to s3
         if(!existingPic){
@@ -434,7 +400,6 @@ public class PetNewFragment extends Fragment implements
             onUploadToS3Completed(this.mCurrentPhotoPath);
 
         }
-        //onUploadToS3Completed(null);
     }
 
     private String calcPicFileName(){
@@ -473,42 +438,42 @@ public class PetNewFragment extends Fragment implements
 
     @Override
     public void onUploadToS3Failed() {
-        showProgress(false);
+        meApplication.hideProgress();
         Toast.makeText(meApplication.getApplicationContext(),"Error occurred trying to save pet ad",Toast.LENGTH_LONG);
         getFragmentManager().popBackStack();
     }
 
     @Override
     public void onPetCreateAdSuccess() {
-        showProgress(false);
+        meApplication.hideProgress();
         Toast.makeText(getActivity().getApplicationContext(), "Pet ad Created successfully", Toast.LENGTH_LONG).show();
         getFragmentManager().popBackStack();
     }
 
     @Override
     public void onPetCreateAdFailed() {
-        showProgress(false);
+        meApplication.hideProgress();
         Toast.makeText(getActivity().getApplicationContext(), "Error occurred trying to Created pet ad", Toast.LENGTH_LONG).show();
         getFragmentManager().popBackStack();
     }
 
     @Override
     public void onPetUpdateAdSuccess() {
-        showProgress(false);
+        meApplication.hideProgress();
         Toast.makeText(getActivity().getApplicationContext(), "Pet ad updated successfully", Toast.LENGTH_LONG).show();
         getFragmentManager().popBackStack();
     }
 
     @Override
     public void onPetUpdateAdFailed() {
-        showProgress(false);
-        Toast.makeText(getActivity().getApplicationContext(), "Error occurred trying to updated pet ad", Toast.LENGTH_LONG).show();
+        meApplication.hideProgress();
+        Toast.makeText(getActivity().getApplicationContext(), "Error occurred while trying to update pet ad", Toast.LENGTH_LONG).show();
         getFragmentManager().popBackStack();
     }
 
     @Override
     public void onRestCallError(Throwable t) {
-        showProgress(false);
+        meApplication.hideProgress();
         Toast.makeText(getActivity().getApplicationContext(), "Connection Error", Toast.LENGTH_LONG).show();
         getFragmentManager().popBackStack();
     }

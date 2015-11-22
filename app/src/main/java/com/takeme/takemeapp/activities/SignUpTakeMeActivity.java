@@ -42,11 +42,6 @@ public class SignUpTakeMeActivity extends Activity implements UserSignUpTask.Use
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-
         return super.onOptionsItemSelected(item);
     }
 
@@ -71,6 +66,7 @@ public class SignUpTakeMeActivity extends Activity implements UserSignUpTask.Use
             return;
         }
 
+        mApp.showProgress(this);
         UserSignUpTask userSignUpTask =
                 new UserSignUpTask(etEmail.getText().toString(),
                                    etPassword.getText().toString(),
@@ -117,8 +113,8 @@ public class SignUpTakeMeActivity extends Activity implements UserSignUpTask.Use
 
     @Override
     public void onRegisterSuccess(UserToken id) {
+        mApp.hideProgress();
 
-        // TODO : Save the user id .
         this.mApp.setCurrentUser(id.getId());
         Toast.makeText(SignUpTakeMeActivity.this, "Sign up succeed", Toast.LENGTH_SHORT).show();
 
@@ -130,11 +126,13 @@ public class SignUpTakeMeActivity extends Activity implements UserSignUpTask.Use
 
     @Override
     public void onRegisterFailed() {
+        mApp.hideProgress();
         Toast.makeText(SignUpTakeMeActivity.this, "Sign up failed", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRestCallError(Throwable t) {
+        mApp.hideProgress();
         Toast.makeText(SignUpTakeMeActivity.this, "Connection failed", Toast.LENGTH_SHORT).show();
     }
 }

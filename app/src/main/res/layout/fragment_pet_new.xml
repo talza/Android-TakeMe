@@ -7,17 +7,7 @@
                     android:paddingRight="0dp"
                     android:paddingTop="0dp"
                     android:orientation="vertical"
-                    android:weightSum="2"
-                    >
-
-    <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/new_ad_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+                    android:weightSum="2">
 
     <LinearLayout
         android:id="@+id/new_ad_form"

@@ -59,6 +59,7 @@ public class StartTakeMeActivity extends Activity implements
         loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
+
                 // App code
                 GraphRequest graphRequestAsyncTask =
                         GraphRequest.newMeRequest(loginResult.getAccessToken(),
@@ -97,6 +98,11 @@ public class StartTakeMeActivity extends Activity implements
 //                }
 //            }
 //        };
+        if(mApp.getCurrentUser() != null){
+            Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
+            startActivity(intentToMain);
+            finish();
+        }
 
         signViaFacebookToken(AccessToken.getCurrentAccessToken());
 
@@ -163,7 +169,7 @@ public class StartTakeMeActivity extends Activity implements
     private void signWithFacebook(JSONObject jsonObject)
     {
         try {
-
+            mApp.showProgress(this);
             UserSignViaFacebookTask userSignViaFacebookTask =
                     new UserSignViaFacebookTask(
                             jsonObject.getString("email"),
@@ -176,6 +182,7 @@ public class StartTakeMeActivity extends Activity implements
             userSignViaFacebookTask.signViaFacebook();
 
         } catch (JSONException e) {
+            mApp.hideProgress();
             Toast.makeText(StartTakeMeActivity.this, "Can't connected via Facebook", Toast.LENGTH_SHORT).show();
         }
 
@@ -184,7 +191,7 @@ public class StartTakeMeActivity extends Activity implements
     private void signViaFacebookToken(AccessToken currentAccessToken) {
 
         if (currentAccessToken != null) {
-
+            mApp.showProgress(this);
             UserGetByFacebookTask userGetByFacebookTask = new UserGetByFacebookTask(currentAccessToken.getToken(),this);
             userGetByFacebookTask.getUserByFacbook();
 
@@ -193,22 +200,25 @@ public class StartTakeMeActivity extends Activity implements
 
     @Override
     public void onRegisterSuccess(UserToken id) {
-
+        mApp.hideProgress();
         this.mApp.setCurrentUser(id.getId());
         Toast.makeText(StartTakeMeActivity.this, "Connected via Facebook", Toast.LENGTH_SHORT).show();
 
         Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
         startActivity(intentToMain);
+        finish();
     }
 
     @Override
     public void onRegisterFailed() {
+        mApp.hideProgress();
         Toast.makeText(StartTakeMeActivity.this, "Can't connected via Facebook", Toast.LENGTH_SHORT).show();
         LoginManager.getInstance().logOut();
     }
 
     @Override
     public void onUserGetByFacebookSuccess(UserToken user) {
+        mApp.hideProgress();
         this.mApp.setCurrentUser(user.getId());
         Intent intentToMain = new Intent(StartTakeMeActivity.this, MainTakeMeActivity.class);
         startActivity(intentToMain);
@@ -218,12 +228,14 @@ public class StartTakeMeActivity extends Activity implements
 
     @Override
     public void onUserGetByFacebookFailed() {
+        mApp.hideProgress();
         Toast.makeText(StartTakeMeActivity.this, "Can't connected via Facebook", Toast.LENGTH_SHORT).show();
-      //  LoginManager.getInstance().logOut();
+        LoginManager.getInstance().logOut();
     }
 
     @Override
     public void onRestCallError(Throwable t) {
+        mApp.hideProgress();
         Toast.makeText(StartTakeMeActivity.this, "Connection failed", Toast.LENGTH_SHORT).show();
         LoginManager.getInstance().logOut();
 

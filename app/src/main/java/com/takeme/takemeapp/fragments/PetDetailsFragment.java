@@ -117,6 +117,7 @@ public class PetDetailsFragment extends Fragment implements
         ownerPhone = (TextView) view.findViewById(R.id.tvOwnerPhone);
 
         if(this.pet.getId() != null) {
+            meApplication.showProgress(this.getActivity());
             PetGetAdTask petGetAdTask =
                     new PetGetAdTask(meApplication.getCurrentUser(),
                     this.pet.getId(),
@@ -203,6 +204,7 @@ public class PetDetailsFragment extends Fragment implements
                 transaction.commit();
                 return true;
             case R.id.delete_pet_action:
+                meApplication.showProgress(this.getActivity());
                 PetDeleteAdTask petDeleteAdTask = new PetDeleteAdTask(meApplication.getCurrentUser(),pet.getId(),this);
                 petDeleteAdTask.deletePetAd();
              return true;
@@ -246,11 +248,14 @@ public class PetDetailsFragment extends Fragment implements
             }
         }
 
+        meApplication.hideProgress();
+
 
     }
 
     @Override
     public void onPetGetAdFailed() {
+        meApplication.hideProgress();
         Toast.makeText(this.getActivity().getApplicationContext(), "An error occurred while getting pet ad", Toast.LENGTH_LONG).show();
         getFragmentManager().popBackStack();
 
@@ -258,17 +263,20 @@ public class PetDetailsFragment extends Fragment implements
 
     @Override
     public void onPetDeleteAdSuccess() {
+        meApplication.hideProgress();
         Toast.makeText(this.getActivity().getApplicationContext(), "Pet ad deleted successfully", Toast.LENGTH_LONG).show();
         getFragmentManager().popBackStack();
     }
 
     @Override
     public void onPetDeleteAdFailed() {
+        meApplication.hideProgress();
         Toast.makeText(this.getActivity().getApplicationContext(), "An error occurred while tried to delete pet ad", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onRestCallError(Throwable t) {
+        meApplication.hideProgress();
         Toast.makeText(this.getActivity().getApplicationContext(), "An error occurred while getting pet ad", Toast.LENGTH_LONG).show();
         getFragmentManager().popBackStack();
     }

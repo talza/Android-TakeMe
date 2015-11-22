@@ -93,6 +93,7 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
         this.mLastNameEditText = (EditText) view.findViewById(R.id.etLastName);
         this.mPhoneNumberEditText = (EditText) view.findViewById(R.id.etPhoneNumber);
 
+        mApp.showProgress(this.getActivity());
         UserGetDetailsTask userGetDetailsTask = new UserGetDetailsTask(this.mApp.getCurrentUser(),this);
         userGetDetailsTask.getUserDetails();
         return view;
@@ -185,6 +186,7 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
 
     @Override
     public void onUserGetDetailsSuccess(User user) {
+        mApp.hideProgress();
         this.mFirstNameEditText.setText(user.getFirstName());
         this.mLastNameEditText.setText(user.getLastName());
         this.mPhoneNumberEditText.setText(user.getPhoneNumber());
@@ -192,24 +194,27 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
 
     @Override
     public void onUserGetDetailsFailed() {
+        mApp.hideProgress();
         Toast.makeText(getActivity(), "User not found", Toast.LENGTH_SHORT).show();
 
     }
 
     @Override
     public void onUpdateSuccess(PostActionResponse PostActionResponse) {
-
+        mApp.hideProgress();
+        Toast.makeText(getActivity().getApplicationContext(), "User updated successfully", Toast.LENGTH_LONG).show();
     }
 
     @Override
     public void onUpdateFailed(PostActionResponse PostActionResponse) {
-
+        mApp.hideProgress();
+        Toast.makeText(getActivity(), "Error occurred while trying to update user", Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onRestCallError(Throwable t) {
+        mApp.hideProgress();
         Toast.makeText(getActivity(), "Connection failed", Toast.LENGTH_SHORT).show();
-
     }
 
     /**
@@ -229,7 +234,7 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
 
     private void updateUser()
     {
-
+        mApp.showProgress(this.getActivity());
         UserUpdateTask userUpdateTask =
                 new UserUpdateTask(this.mApp.getCurrentUser(),
                                    this.mFirstNameEditText.getText().toString(),
@@ -241,6 +246,7 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
 
     private void signOut(View v)
     {
+        mApp.setCurrentUser(null);
         Intent intentToStart = new Intent(getActivity(), StartTakeMeActivity.class);
         startActivity(intentToStart);
         LoginManager.getInstance().logOut();
