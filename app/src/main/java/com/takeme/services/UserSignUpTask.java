@@ -13,7 +13,7 @@ public class UserSignUpTask implements Callback<UserToken> {
     private UserSignUpResponse userSignUpResponse;
     private User user;
 
-    public UserSignUpTask(String email, String password, String firstName, String lastName, String phoneNumber, UserSignUpResponse userRegisterRespond){
+    public UserSignUpTask(String email, String password, String firstName, String lastName, String phoneNumber, String registrationDeviceKey, UserSignUpResponse userRegisterRespond){
         this.userSignUpResponse = userRegisterRespond;
         user = new User();
         user.setEmail(email);
@@ -21,6 +21,7 @@ public class UserSignUpTask implements Callback<UserToken> {
         user.setFirstName(firstName);
         user.setLastName(lastName);
         user.setPhoneNumber(phoneNumber);
+        user.setRegistrationDeviceKey(registrationDeviceKey);
     }
 
     public void signUp(){

@@ -310,6 +310,13 @@ public class PetsListFragment extends Fragment implements
                     new PetAdd2WishListTask(meApplication.getCurrentUser(),pet.getId());
             petAdd2WishListTask.add2WishList();
         }else{
+
+            if(petListMode.equals(Constants.PetsListMode.WishList)){
+                mPetsList.remove(pet);
+                mPetsListView.invalidate();
+                petsListAdapter.notifyDataSetChanged();
+            }
+
             PetDeleteFromWishListTask petDeleteFromWishListTask =
                     new PetDeleteFromWishListTask(meApplication.getCurrentUser(),pet.getId());
             petDeleteFromWishListTask.deleteFromWishList();

@@ -1,6 +1,7 @@
 package com.takeme.takemeapp.listadapters;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,7 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 import com.takeme.models.Pet;
+import com.takeme.services.TakeMeUtil;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
 
@@ -52,10 +54,15 @@ public class PetsListAdapter extends ArrayAdapter<Pet>
         TextView petShortDec = (TextView) convertView.findViewById(R.id.tvPetShortDesc);
         petShortDec.setText(pet.getShortDescription());
 
+        TextView petSize = (TextView) convertView.findViewById(R.id.tvPetSize);
+        petSize.setText(TakeMeUtil.getInstance().getSizeByIndex(pet.getPetSize()));
+
+
         // Set Pet Image
         ImageView petImage = (ImageView) convertView.findViewById(R.id.imgPetImage);
-        Picasso.with(getContext()).load(pet.getPetPhotoUrl()).into(petImage);
-
+        if(!TextUtils.isEmpty(pet.getPetPhotoUrl())) {
+            Picasso.with(getContext()).load(pet.getPetPhotoUrl()).error(getContext().getDrawable(R.drawable.ic_take_me)).into(petImage);
+        }
         // Set Wish List Button
         CheckBox petWishListCheckBox = (CheckBox) convertView.findViewById(R.id.cbWishList);
         petWishListCheckBox.setTag(position);

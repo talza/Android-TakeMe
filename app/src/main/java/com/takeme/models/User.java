@@ -1,9 +1,5 @@
 package com.takeme.models;
 
-import android.databinding.BaseObservable;
-import android.databinding.Bindable;
-
-import com.takeme.takemeapp.BR;
 import com.takeme.takemeapp.R;
 
 /**
@@ -16,6 +12,10 @@ public class User {
     private String lastName;
     private String phoneNumber;
     private String facebookToken;
+    private String registrationDeviceKey;
+
+    public User() {
+    }
 
     public String getFirstName() {
         return this.firstName;
@@ -63,5 +63,13 @@ public class User {
 
     public void setFacebookToken(String facebookToken) {
         this.facebookToken = facebookToken;
+    }
+
+    public String getRegistrationDeviceKey() {
+        return registrationDeviceKey;
+    }
+
+    public void setRegistrationDeviceKey(String registrationDeviceKey) {
+        this.registrationDeviceKey = registrationDeviceKey;
     }
 }

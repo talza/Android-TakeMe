@@ -11,20 +11,32 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.takeme.models.UserToken;
+import com.takeme.services.RegistrationDeviceUtil;
 import com.takeme.services.UserSignUpTask;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
 
-public class SignUpTakeMeActivity extends Activity implements UserSignUpTask.UserSignUpResponse {
+public class SignUpTakeMeActivity extends Activity implements
+        UserSignUpTask.UserSignUpResponse,
+        RegistrationDeviceUtil.GetRegistrationDeviceIdCallBack{
 
     private TakeMeApplication mApp;
-
+    private EditText firstNameEditText;
+    private EditText lastNameEditText;
+    private EditText phoneNumberEditText;
+    private EditText emailEditText;
+    private EditText passwordEditText;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_take_me);
         this.mApp =  (TakeMeApplication)getApplication();
 
+        firstNameEditText   = (EditText)findViewById(R.id.etFirstName);
+        lastNameEditText    = (EditText)findViewById(R.id.etLastName);
+        phoneNumberEditText = (EditText)findViewById(R.id.etPhoneNumber);
+        emailEditText       = (EditText)findViewById(R.id.etEmail);
+        passwordEditText    = (EditText)findViewById(R.id.etPassword);
     }
 
     @Override
@@ -47,34 +59,25 @@ public class SignUpTakeMeActivity extends Activity implements UserSignUpTask.Use
 
     public void onSignUp(View view)
     {
-        String strFirstName       = ((EditText)findViewById(R.id.etFirstName)).getText().toString();
-        String strLastName        = ((EditText)findViewById(R.id.etLastName)).getText().toString();
-        String strPhoneNumber     = ((EditText)findViewById(R.id.etPhoneNumber)).getText().toString();
-        EditText etEmail    = ((EditText)findViewById(R.id.etEmail));
-        EditText etPassword = ((EditText)findViewById(R.id.etPassword));
 
-        if (!isValidEmail(etEmail.getText().toString()))
+        if (!isValidEmail(emailEditText.getText().toString()))
         {
-            etEmail.setError(getString(R.string.msg_invalid_email_format));
+            emailEditText.setError(getString(R.string.msg_invalid_email_format));
             return;
         }
 
         // Check Password validation
-        if ( !isValidPassword(etPassword.getText().toString()))
+        if ( !isValidPassword(passwordEditText.getText().toString()))
         {
-            etPassword.setError(getString(R.string.msg_invalid_password_format));
+            passwordEditText.setError(getString(R.string.msg_invalid_password_format));
             return;
         }
 
         mApp.showProgress(this);
-        UserSignUpTask userSignUpTask =
-                new UserSignUpTask(etEmail.getText().toString(),
-                                   etPassword.getText().toString(),
-                                   strFirstName,
-                                   strLastName,
-                                   strPhoneNumber, this);
 
-        userSignUpTask.signUp();
+
+        // Get the registration device id.
+        RegistrationDeviceUtil.getInstance().getRegId(this);
 
     }
 
@@ -134,5 +137,21 @@ public class SignUpTakeMeActivity extends Activity implements UserSignUpTask.Use
     public void onRestCallError(Throwable t) {
         mApp.hideProgress();
         Toast.makeText(SignUpTakeMeActivity.this, "Connection failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onGetRegistrationDeviceId(String regId) {
+
+        UserSignUpTask userSignUpTask =
+                new UserSignUpTask(
+                        emailEditText.getText().toString(),
+                        passwordEditText.getText().toString(),
+                        firstNameEditText.getText().toString(),
+                        lastNameEditText.getText().toString(),
+                        phoneNumberEditText.getText().toString(),
+                        regId, this);
+
+        userSignUpTask.signUp();
+
     }
 }

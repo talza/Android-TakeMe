@@ -1,34 +1,25 @@
 package com.takeme.takemeapp.fragments;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.annotation.TargetApi;
+
 import android.app.Activity;
 import android.app.Fragment;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.NumberPicker;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.amazonaws.mobileconnectors.s3.transfermanager.model.UploadResult;
-
 import com.squareup.picasso.Picasso;
 import com.takeme.models.Pet;
 import com.takeme.services.AwsS3Provider;
@@ -42,7 +33,6 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 
 public class PetNewFragment extends Fragment implements
@@ -67,7 +57,6 @@ public class PetNewFragment extends Fragment implements
     private Spinner spGender;
 
     private View mPetNewView;
-    private View newAdFormView;
 
     private boolean pictureTaken = false;
     private boolean existingPic = false;
@@ -144,7 +133,6 @@ public class PetNewFragment extends Fragment implements
 
         // Inflate the layout for this fragment
         mPetNewView = inflater.inflate(R.layout.fragment_pet_new, container, false);
-        newAdFormView = mPetNewView.findViewById(R.id.new_ad_form);
 
         petPicture = (ImageView)mPetNewView.findViewById(R.id.picture);
         petPicture.setScaleType(ImageView.ScaleType.FIT_CENTER);
@@ -163,7 +151,7 @@ public class PetNewFragment extends Fragment implements
 
         getActivity().getActionBar().setTitle("Add Pet");
 
-        if(mPetUpdateMode != null) {
+        if(mPetUpdateMode != null && mPetUpdateMode.equals(Constants.PetUpdateMode.UPDATE)) {
             existingPic = true;
             petNameEditText.setText(getArguments().getString(Constants.PET_UPDATE_NAME));
             spType.setSelection(getArguments().getInt(Constants.PET_UPDATE_TYPE));
@@ -189,7 +177,11 @@ public class PetNewFragment extends Fragment implements
     {
         if(!mNavigationDrawerFragment.isDrawerOpen())
         {
-            getActivity().getActionBar().setTitle("Create Ad");
+            if(mPetUpdateMode.equals(Constants.PetUpdateMode.CREATE)) {
+                getActivity().getActionBar().setTitle("Create Ad");
+            }else{
+                getActivity().getActionBar().setTitle("Update Ad");
+            }
             menu.clear();
             return;
         }
@@ -220,7 +212,7 @@ public class PetNewFragment extends Fragment implements
 
             @Override
             public int getCount() {
-                return super.getCount()-1; // you dont display last item. It is used as hint.
+                return super.getCount() - 1; // you dont display last item. It is used as hint.
             }
 
         };
@@ -233,7 +225,7 @@ public class PetNewFragment extends Fragment implements
 
         //Apply the adapter to the spinner
         spAge.setAdapter(adapter);
-        spAge.setSelection(adapter.getCount()); //display hint
+        spAge.setSelection(adapter.getCount());//display hint
     }
 
     //Set the animal types values set.

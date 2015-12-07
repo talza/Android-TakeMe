@@ -11,15 +11,19 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.takeme.models.UserToken;
+import com.takeme.services.RegistrationDeviceUtil;
 import com.takeme.services.UserSignInTask;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
 
-public class SignInTakeMeActivity extends Activity implements UserSignInTask.UserLoginResponse{
+public class SignInTakeMeActivity extends Activity implements
+        UserSignInTask.UserLoginResponse,
+        RegistrationDeviceUtil.GetRegistrationDeviceIdCallBack{
 
     private TakeMeApplication mApp;
     private  EditText etEmail;
     private EditText etPassword;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -31,8 +35,6 @@ public class SignInTakeMeActivity extends Activity implements UserSignInTask.Use
 
         etEmail.setText("test1@gmail.com");
         etPassword.setText("Aa123456");
-
-
     }
 
     @Override
@@ -65,8 +67,9 @@ public class SignInTakeMeActivity extends Activity implements UserSignInTask.Use
         }
 
         mApp.showProgress(this);
-        UserSignInTask userSignInTask = new UserSignInTask(etEmail.getText().toString(),etPassword.getText().toString(),this);
-        userSignInTask.signIn();
+
+        RegistrationDeviceUtil.getInstance().getRegId(this);
+
     }
 
     public void onSignUp(View view)
@@ -104,5 +107,16 @@ public class SignInTakeMeActivity extends Activity implements UserSignInTask.Use
         mApp.hideProgress();
         Toast.makeText(SignInTakeMeActivity.this, "Connection failed", Toast.LENGTH_SHORT).show();
 
+    }
+
+    @Override
+    public void onGetRegistrationDeviceId(String regId) {
+
+        UserSignInTask userSignInTask = new UserSignInTask(
+                etEmail.getText().toString(),
+                etPassword.getText().toString(),
+                regId,this);
+
+        userSignInTask.signIn();
     }
 }

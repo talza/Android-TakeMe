@@ -8,7 +8,7 @@ import com.takeme.models.User;
 public class UserLogin {
     private String email;
     private String password;
-
+    private String registrationDeviceKey;
 
     public UserLogin()
     {
@@ -29,5 +29,13 @@ public class UserLogin {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getRegistrationDeviceKey() {
+        return registrationDeviceKey;
+    }
+
+    public void setRegistrationDeviceKey(String registrationDeviceKey) {
+        this.registrationDeviceKey = registrationDeviceKey;
     }
 }

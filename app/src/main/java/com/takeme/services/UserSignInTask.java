@@ -12,11 +12,12 @@ public class UserSignInTask implements Callback<UserToken> {
     private UserLoginResponse userLoginResponse;
     private UserLogin userLogin;
 
-    public UserSignInTask(String email, String password, UserLoginResponse userLoginResponse){
+    public UserSignInTask(String email, String password, String registrationDeviceKey, UserLoginResponse userLoginResponse){
         this.userLoginResponse = userLoginResponse;
         userLogin = new UserLogin();
         userLogin.setEmail(email);
         userLogin.setPassword(password);
+        userLogin.setRegistrationDeviceKey(registrationDeviceKey);
     }
 
     public void signIn(){

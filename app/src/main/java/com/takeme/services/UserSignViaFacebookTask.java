@@ -13,14 +13,15 @@ public class UserSignViaFacebookTask implements Callback<UserToken> {
     private UserSignViaFacebookResponse userSignViaFacebookResponse;
     private User user;
 
-    public UserSignViaFacebookTask(String email, String firstName, String lastName, String phoneNumber,String facebookToken, UserSignViaFacebookResponse userSignViaFacebookResponse){
+    public UserSignViaFacebookTask(String email, String firstName, String lastName, String registrationDeviceKey,String facebookToken, UserSignViaFacebookResponse userSignViaFacebookResponse){
         this.userSignViaFacebookResponse = userSignViaFacebookResponse;
         user = new User();
         user.setEmail(email);
         user.setPassword(null);
         user.setFirstName(firstName);
         user.setLastName(lastName);
-        user.setPhoneNumber(phoneNumber);
+        user.setPhoneNumber(null);
+        user.setRegistrationDeviceKey(registrationDeviceKey);
         user.setFacebookToken(facebookToken);
     }
 

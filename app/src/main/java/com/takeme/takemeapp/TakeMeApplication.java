@@ -3,28 +3,19 @@ package com.takeme.takemeapp;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
 
 import com.takeme.services.AwsS3Provider;
+import com.takeme.services.RegistrationDeviceUtil;
 import com.takeme.services.TakeMeUtil;
+
+import java.io.IOException;
 
 public class TakeMeApplication extends Application { //implements GetAdsUserLikesListener{
 
-    public static final String AGE = "Age";
-    public static final String SIZE = "Size";
-    public static final String ANIMAL = "Animal";
-    public static final String GENDER = "Gender";
-    public static final String FROM_AGE = "FromAge";
-    public static final String TO_AGE = "ToAge";
-    public static final String USER = "user";
-    public static final String FAV = "fav";
-
-    public static final String LOGIN_PARAM = "login_param";
-    public static final int LOGIN = 1;
-    public static final int SIGN_UP = 2;
-
     private static Context context;
     private ProgressDialog progress;
-
     private Long currentUser;
 
     @Override
@@ -35,6 +26,8 @@ public class TakeMeApplication extends Application { //implements GetAdsUserLike
 
         AwsS3Provider.getInstance().init(context);
         TakeMeUtil.getInstance().init(context);
+        RegistrationDeviceUtil.getInstance().init(context);
+
     }
 
     public static Context getContext(){
@@ -51,15 +44,19 @@ public class TakeMeApplication extends Application { //implements GetAdsUserLike
     }
 
     public void showProgress(Context context){
-        progress = ProgressDialog.show(context, null,
-                "In Progress...", true);
+        if(progress == null) {
+            progress = ProgressDialog.show(context, null,
+                    "Loading...", true);
+        }
     }
 
     public void hideProgress(){
         if(progress != null) {
             progress.dismiss();
+            progress = null;
         }
     }
+
 
 }
 

@@ -25,6 +25,7 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.takeme.models.UserToken;
+import com.takeme.services.RegistrationDeviceUtil;
 import com.takeme.services.UserGetByFacebookTask;
 import com.takeme.services.UserSignViaFacebookTask;
 import com.takeme.takemeapp.R;
@@ -36,10 +37,14 @@ import org.json.JSONObject;
 
 public class StartTakeMeActivity extends Activity implements
         UserSignViaFacebookTask.UserSignViaFacebookResponse,
-        UserGetByFacebookTask.UserGetByFacebookResponse{
+        UserGetByFacebookTask.UserGetByFacebookResponse,
+        RegistrationDeviceUtil.GetRegistrationDeviceIdCallBack{
 
     private CallbackManager callbackManager;
-    private AccessTokenTracker accessTokenTracker;
+
+    private String email;
+    private String firstName;
+    private String lastName;
 
     private TakeMeApplication mApp;
 
@@ -90,14 +95,6 @@ public class StartTakeMeActivity extends Activity implements
             }
         });
 
-//        accessTokenTracker = new AccessTokenTracker() {
-//            @Override
-//            protected void onCurrentAccessTokenChanged(AccessToken oldAccessToken, AccessToken newAccessToken) {
-//                if(oldAccessToken.equals(newAccessToken)) {
-//      //             updateWithToken(newAccessToken);
-//                }
-//            }
-//        };
         if(mApp.getCurrentUser() != null){
             Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
             startActivity(intentToMain);
@@ -170,16 +167,13 @@ public class StartTakeMeActivity extends Activity implements
     {
         try {
             mApp.showProgress(this);
-            UserSignViaFacebookTask userSignViaFacebookTask =
-                    new UserSignViaFacebookTask(
-                            jsonObject.getString("email"),
-                            jsonObject.getString("first_name"),
-                            jsonObject.getString("last_name"),
-                            null,
-                            AccessToken.getCurrentAccessToken().getToken(),
-                            this);
 
-            userSignViaFacebookTask.signViaFacebook();
+            this.email = jsonObject.getString("email");
+            this.firstName = jsonObject.getString("first_name");
+            this.lastName = jsonObject.getString("last_name");
+
+            // Get the registration device id.
+            RegistrationDeviceUtil.getInstance().getRegId(this);
 
         } catch (JSONException e) {
             mApp.hideProgress();
@@ -238,6 +232,22 @@ public class StartTakeMeActivity extends Activity implements
         mApp.hideProgress();
         Toast.makeText(StartTakeMeActivity.this, "Connection failed", Toast.LENGTH_SHORT).show();
         LoginManager.getInstance().logOut();
+
+    }
+
+    @Override
+    public void onGetRegistrationDeviceId(String regId) {
+
+        UserSignViaFacebookTask userSignViaFacebookTask =
+                new UserSignViaFacebookTask(
+                        this.email,
+                        this.firstName,
+                        this.lastName,
+                        regId,
+                        AccessToken.getCurrentAccessToken().getToken(),
+                        this);
+
+        userSignViaFacebookTask.signViaFacebook();
 
     }
 }

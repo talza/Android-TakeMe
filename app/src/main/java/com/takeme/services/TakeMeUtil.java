@@ -14,7 +14,7 @@ public class TakeMeUtil {
     ArrayList<String> lsGender;
     ArrayList<String> lsType;
 
-    public void init(Context context) {
+    public synchronized void init(Context context) {
 
         this.lsSize = new ArrayList<>();
         this.lsGender = new ArrayList<>();

@@ -5,6 +5,7 @@ import android.app.FragmentTransaction;
 import android.net.Uri;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -12,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -19,11 +21,15 @@ import android.widget.Toast;
 import com.squareup.picasso.Picasso;
 import com.takeme.models.Pet;
 import com.takeme.services.Constants;
+import com.takeme.services.PetAdd2WishListTask;
 import com.takeme.services.PetDeleteAdTask;
+import com.takeme.services.PetDeleteFromWishListTask;
 import com.takeme.services.PetGetAdTask;
 import com.takeme.services.TakeMeUtil;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
+
+import org.w3c.dom.Text;
 
 
 /**
@@ -52,6 +58,7 @@ public class PetDetailsFragment extends Fragment implements
     private TextView petSize;
     private TextView petGender;
     private TextView petAge;
+    private CheckBox petWishListCheckBox;
     private TextView ownerName;
     private TextView ownerEmail;
     private TextView ownerPhone;
@@ -111,6 +118,19 @@ public class PetDetailsFragment extends Fragment implements
         petGender = (TextView) view.findViewById(R.id.tvGender);
         petAge = (TextView) view.findViewById(R.id.tvAge);
         petDesc = (TextView) view.findViewById(R.id.tvPetDescription);
+        petWishListCheckBox = (CheckBox) view.findViewById(R.id.cbWishList);
+
+        // Set on click wish list button.
+        petWishListCheckBox.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View parent = (View)v.getParent();
+                if (parent != null ) {
+
+                    wishListClicked(pet);
+                }
+            }
+        });
 
         ownerName = (TextView) view.findViewById(R.id.tvOwnerName);
         ownerEmail = (TextView) view.findViewById(R.id.tvOwnerEmail);
@@ -221,9 +241,11 @@ public class PetDetailsFragment extends Fragment implements
         petGender.setText(TakeMeUtil.getInstance().getGenderByIndex(Integer.valueOf(pet.getPetGender())));
         petSize.setText(TakeMeUtil.getInstance().getSizeByIndex(Integer.valueOf(pet.getPetSize())));
         petDesc.setText(pet.getPetDescription());
+        petWishListCheckBox.setChecked(pet.isInWishlist());
 
-        Picasso.with(getActivity()).load(pet.getPetPhotoUrl()).into(petImage);
-
+        if(!TextUtils.isEmpty(pet.getPetPhotoUrl())) {
+            Picasso.with(getActivity()).load(pet.getPetPhotoUrl()).error(getActivity().getDrawable(R.drawable.ic_take_me)).into(petImage);
+        }
         ownerEmail.setText(pet.getPetOwner().getOwnerEmail());
         ownerName.setText(pet.getPetOwner().getOwnerFirstName() + " " + pet.getPetOwner().getOwnerLastName());
         ownerPhone.setText(pet.getPetOwner().getOwnerPhone());
@@ -294,6 +316,22 @@ public class PetDetailsFragment extends Fragment implements
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+    }
+
+    private void wishListClicked(Pet pet) {
+
+        pet.setIsWishInList(!pet.isInWishlist());
+
+        if(pet.isInWishlist()){
+            PetAdd2WishListTask petAdd2WishListTask =
+                    new PetAdd2WishListTask(meApplication.getCurrentUser(),pet.getId());
+            petAdd2WishListTask.add2WishList();
+        }else{
+
+            PetDeleteFromWishListTask petDeleteFromWishListTask =
+                    new PetDeleteFromWishListTask(meApplication.getCurrentUser(),pet.getId());
+            petDeleteFromWishListTask.deleteFromWishList();
+        }
     }
 
 }

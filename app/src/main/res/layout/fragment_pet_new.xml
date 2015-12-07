@@ -1,6 +1,5 @@
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:fbutton="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:paddingLeft="0dp"
@@ -14,21 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:weightSum="2">
-
-        <LinearLayout
-            android:id="@+id/det_cont_image"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:layout_weight="1">
-            <ImageView
-                android:id="@+id/picture"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/ic_take_picture"
-                android:scaleType="center"/>
-        </LinearLayout>
+        android:weightSum="1">
 
         <ScrollView
             android:layout_width="match_parent"
@@ -37,11 +22,19 @@
             android:layout_gravity="top"
             android:paddingLeft="10dp">
 
-            <LinearLayout
-                android:id="@+id/det_cont_gen_data"
+        <LinearLayout
+            android:id="@+id/det_cont"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:layout_weight="1">
+
+            <ImageView
+                android:id="@+id/picture"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+                android:layout_height="200dp"
+                android:src="@drawable/ic_take_picture"
+                android:scaleType="center"/>
 
                 <EditText
                     android:id="@+id/etPetName"
@@ -54,35 +47,40 @@
                     android:id="@+id/spPetType"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="-4dp" />
 
                 <Spinner
                     android:id="@+id/spPetSize"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="-4dp" />
 
                 <Spinner
                     android:id="@+id/spPetGender"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="-4dp" />
 
                 <Spinner
                     android:id="@+id/spPetAge"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="10dp"
+                    android:layout_marginLeft="-4dp"/>
 
                 <EditText
                     android:id="@+id/etPetDescription"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:hint="@string/lbl_description"
-                    android:layout_marginTop="10dp"/>
+                    android:layout_marginTop="10dp" />
 
             </LinearLayout>
         </ScrollView>
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -97,5 +95,6 @@
                 android:textAllCaps="false"/>
 
         </LinearLayout>
+
     </LinearLayout>
 </LinearLayout>

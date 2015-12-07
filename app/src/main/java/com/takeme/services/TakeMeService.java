@@ -56,10 +56,10 @@ public interface TakeMeService {
     @DELETE("ad/{id}")
     Call<Object> deletePetAd(@Path("id") Long petId,@Query("userId") Long token);
 
-    @POST("user/{userId}/wishlist")
+    @POST("ad/{userId}/wishlist")
     Call<Object> addPetAd2WishList(@Path("userId") Long token, @Body PetAdd2Wishlist petAdd2Wishlist);
 
-    @DELETE("user/{userId}/wishlist/{petId}")
+    @DELETE("ad/{userId}/wishlist/{petId}")
     Call<Object> deletePetAdFromWishList(@Path("userId") Long token, @Path("petId") Long petId);
 
 }
