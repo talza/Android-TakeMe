@@ -2,6 +2,7 @@ package com.takeme.models;
 
 /**
  * Created by tzamir on 10/30/2015.
+ * This class represent model of Pet's owner
  */
 public class PetOwner {
     private Long ownerId;

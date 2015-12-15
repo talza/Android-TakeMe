@@ -2,6 +2,8 @@ package com.takeme.services;
 
 /**
  * Created by tzamir on 10/20/2015.
+ *
+ * This class represent to constants of the application
  */
 public final class Constants {
 

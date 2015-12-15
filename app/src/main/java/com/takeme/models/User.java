@@ -1,9 +1,9 @@
 package com.takeme.models;
 
-import com.takeme.takemeapp.R;
 
 /**
- * Created by tzamir on 9/2/2015.
+ * Created by tzamir on 10/10/2015.
+ * This model represent model of token of user.
  */
 public class User {
     private String email;

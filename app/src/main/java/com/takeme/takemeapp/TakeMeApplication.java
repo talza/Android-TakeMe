@@ -3,16 +3,16 @@ package com.takeme.takemeapp;
 import android.app.Application;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.util.Log;
 
 import com.takeme.services.AwsS3Provider;
 import com.takeme.services.RegistrationDeviceUtil;
 import com.takeme.services.TakeMeUtil;
 
-import java.io.IOException;
-
-public class TakeMeApplication extends Application { //implements GetAdsUserLikesListener{
+/***
+ * * Created by tzamir on 09/01/2015.
+ * This model represent model of token of user.
+ */
+public class TakeMeApplication extends Application {
 
     private static Context context;
     private ProgressDialog progress;

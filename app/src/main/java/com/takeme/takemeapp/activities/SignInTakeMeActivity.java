@@ -16,6 +16,9 @@ import com.takeme.services.UserSignInTask;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
 
+/**
+ * This class represent the activity of sign in to application
+ */
 public class SignInTakeMeActivity extends Activity implements
         UserSignInTask.UserLoginResponse,
         RegistrationDeviceUtil.GetRegistrationDeviceIdCallBack{
@@ -33,8 +36,6 @@ public class SignInTakeMeActivity extends Activity implements
         etEmail    = ((EditText)findViewById(R.id.etEmail));
         etPassword = ((EditText)findViewById(R.id.etPassword));
 
-        etEmail.setText("test1@gmail.com");
-        etPassword.setText("Aa123456");
     }
 
     @Override
@@ -51,13 +52,16 @@ public class SignInTakeMeActivity extends Activity implements
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Sign in to application
+     * @param view
+     */
     public void onSignIn(View view)
     {
-
+        // Check if the email is valid
         if (!isValidEmail(etEmail.getText().toString()) ||
             TextUtils.isEmpty(etPassword.getText().toString()))
         {
@@ -68,10 +72,15 @@ public class SignInTakeMeActivity extends Activity implements
 
         mApp.showProgress(this);
 
+        // Get the registration id of device
         RegistrationDeviceUtil.getInstance().getRegId(this);
 
     }
 
+    /**
+     * Go to sign up activity
+     * @param view
+     */
     public void onSignUp(View view)
     {
         Intent intent = new Intent(this, SignUpTakeMeActivity.class);
@@ -79,6 +88,11 @@ public class SignInTakeMeActivity extends Activity implements
         finish();
     }
 
+    /**
+     * Check if email is valid
+     * @param target
+     * @return
+     */
     private boolean isValidEmail(CharSequence target) {
 
         return !TextUtils.isEmpty(target) &&
@@ -86,22 +100,38 @@ public class SignInTakeMeActivity extends Activity implements
 
     }
 
+    /**
+     * Success to login to application
+     * @param id
+     */
     @Override
     public void onLoginSuccess(UserToken id) {
+
         mApp.hideProgress();
+
+        // Save the current user.
         this.mApp.setCurrentUser(id.getId());
+
+        // Go to main activity
         Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
         startActivity(intentToMain);
         finish();
 
     }
 
+    /**
+     * Failed to login
+     */
     @Override
     public void onLoginFailed() {
         mApp.hideProgress();
         Toast.makeText(SignInTakeMeActivity.this, getString(R.string.msg_invalid_email_password), Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Error occurred when tried to login
+     * @param t
+     */
     @Override
     public void onRestCallError(Throwable t) {
         mApp.hideProgress();
@@ -109,9 +139,14 @@ public class SignInTakeMeActivity extends Activity implements
 
     }
 
+    /**
+     * Success to get the registration device id.
+     * @param regId
+     */
     @Override
     public void onGetRegistrationDeviceId(String regId) {
 
+        // Sign in to application
         UserSignInTask userSignInTask = new UserSignInTask(
                 etEmail.getText().toString(),
                 etPassword.getText().toString(),

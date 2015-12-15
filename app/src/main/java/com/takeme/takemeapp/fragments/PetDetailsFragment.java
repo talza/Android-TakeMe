@@ -12,7 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -29,16 +29,9 @@ import com.takeme.services.TakeMeUtil;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
 
-import org.w3c.dom.Text;
-
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PetDetailsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PetDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class represent fragment of pet details
  */
 public class PetDetailsFragment extends Fragment implements
         PetGetAdTask. PetGetAdResponse,
@@ -64,12 +57,10 @@ public class PetDetailsFragment extends Fragment implements
     private TextView ownerPhone;
 
     /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @return A new instance of fragment PetDetailsFragment.
+     * Create new instance with parameters
+     * @param petId - pet id
+     * @return
      */
-    // TODO: Rename and change types and number of parameters
     public static PetDetailsFragment newInstance(Long petId) {
         PetDetailsFragment fragment = new PetDetailsFragment();
         Bundle args = new Bundle();
@@ -136,7 +127,9 @@ public class PetDetailsFragment extends Fragment implements
         ownerEmail = (TextView) view.findViewById(R.id.tvOwnerEmail);
         ownerPhone = (TextView) view.findViewById(R.id.tvOwnerPhone);
 
+        // Get the pet data
         if(this.pet.getId() != null) {
+
             meApplication.showProgress(this.getActivity());
             PetGetAdTask petGetAdTask =
                     new PetGetAdTask(meApplication.getCurrentUser(),
@@ -201,6 +194,8 @@ public class PetDetailsFragment extends Fragment implements
         int id = item.getItemId();
 
         switch (id){
+
+            // If the user click on edit, then move to update pet fragment
             case R.id.edit_pet_action:
                 Fragment fragment = PetNewFragment.newInstance(
                         pet.getId(),
@@ -223,6 +218,7 @@ public class PetDetailsFragment extends Fragment implements
                 // Commit the transaction
                 transaction.commit();
                 return true;
+            // If the user click on delete , than delete the pet
             case R.id.delete_pet_action:
                 meApplication.showProgress(this.getActivity());
                 PetDeleteAdTask petDeleteAdTask = new PetDeleteAdTask(meApplication.getCurrentUser(),pet.getId(),this);
@@ -233,8 +229,14 @@ public class PetDetailsFragment extends Fragment implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Success to get pet data
+     * @param pet - pet data
+     */
     @Override
     public void onPetGetAdSuccess(Pet pet) {
+
+        // Set the pet data
         this.pet = pet;
         mTitle = pet.getPetName();
         petAge.setText(pet.getPetAge().toString());
@@ -243,13 +245,17 @@ public class PetDetailsFragment extends Fragment implements
         petDesc.setText(pet.getPetDescription());
         petWishListCheckBox.setChecked(pet.isInWishlist());
 
+        // Check if the pet have valid picture
         if(!TextUtils.isEmpty(pet.getPetPhotoUrl())) {
             Picasso.with(getActivity()).load(pet.getPetPhotoUrl()).error(getActivity().getDrawable(R.drawable.ic_take_me)).into(petImage);
         }
+
+        // Set owner data
         ownerEmail.setText(pet.getPetOwner().getOwnerEmail());
         ownerName.setText(pet.getPetOwner().getOwnerFirstName() + " " + pet.getPetOwner().getOwnerLastName());
         ownerPhone.setText(pet.getPetOwner().getOwnerPhone());
 
+        // Check if the current user is the owner of the current pet.
         if(this.pet != null               &&
            this.pet.getPetOwner() != null &&
            meApplication.getCurrentUser().equals(this.pet.getPetOwner().getOwnerId()))
@@ -314,18 +320,25 @@ public class PetDetailsFragment extends Fragment implements
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
 
+
+    /**
+     * When user click wish list , than save/delete pet to/from wish list
+     * @param pet - pet to save in wish list
+     */
     private void wishListClicked(Pet pet) {
 
         pet.setIsWishInList(!pet.isInWishlist());
 
+        // If the pet doesn't exist in wish list, add it
         if(pet.isInWishlist()){
             PetAdd2WishListTask petAdd2WishListTask =
                     new PetAdd2WishListTask(meApplication.getCurrentUser(),pet.getId());
             petAdd2WishListTask.add2WishList();
+
+        // Else the pet in wish list, so need to remove it
         }else{
 
             PetDeleteFromWishListTask petDeleteFromWishListTask =

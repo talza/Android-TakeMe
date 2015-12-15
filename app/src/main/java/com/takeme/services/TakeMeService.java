@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 
 import retrofit.Call;
-import retrofit.Response;
 import retrofit.http.Body;
 import retrofit.http.DELETE;
 import retrofit.http.GET;

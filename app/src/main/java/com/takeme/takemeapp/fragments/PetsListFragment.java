@@ -30,12 +30,8 @@ import java.util.List;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PetsListFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PetsListFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class represent fragment for:
+ * Pets list , My pets , Wish list
  */
 public class PetsListFragment extends Fragment implements
         PetsSearchFragment.OnSearchClicked,
@@ -104,6 +100,7 @@ public class PetsListFragment extends Fragment implements
 
         meApplication = (TakeMeApplication)getActivity().getApplication();
 
+        // Set parameters according to pet list mode.
         switch (petListMode)
         {
             case PetsList:
@@ -164,6 +161,8 @@ public class PetsListFragment extends Fragment implements
         });
 
         meApplication.showProgress(this.getActivity());
+
+        // Get the pets list data
         PetsFindAdTask petsFindTask =
                 new PetsFindAdTask(meApplication.getCurrentUser(),
                         this.type,
@@ -246,6 +245,14 @@ public class PetsListFragment extends Fragment implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Get the filters parameters from serach dialog
+     * @param animalType - animal type
+     * @param animalSize - animal size
+     * @param animalGender - animal size
+     * @param animalAgeFrom - age from
+     * @param animalAgeTo - age to
+     */
     @Override
     public void onSearchClicked(int animalType,
                                 int animalSize,
@@ -253,14 +260,18 @@ public class PetsListFragment extends Fragment implements
                                 int animalAgeFrom,
                                 int animalAgeTo) {
 
+       // hide serach pet dialog & progress
        mPetsSearchFragment.dismiss();
        meApplication.showProgress(this.getActivity());
 
+       // set the filters parameters
        this.type = animalType;
        this.size = animalSize;
        this.gender = animalGender;
        this.ageFrom = animalAgeFrom;
        this.ageTo = animalAgeTo;
+
+       // Get pets list data according to filters
        PetsFindAdTask petsFindTask = new PetsFindAdTask(this.meApplication.getCurrentUser(),
                                                      this.type,
                                                      this.size,
@@ -273,20 +284,31 @@ public class PetsListFragment extends Fragment implements
         petsFindTask.getPetsList();
     }
 
+    /**
+     * Success to get pets list
+     * @param lsPets - pet list to display
+     */
     @Override
     public void onPetsGetListSuccess(List<Pet> lsPets) {
 
+        // Clear the exist pets
         this.mPetsList.clear();
+
+        // add the new pets to list
         for (Pet pet: lsPets) {
             this.mPetsList.add(pet);
         }
 
+        // Refresh the ui & hide progress
         mPetsListView.invalidate();
         petsListAdapter.notifyDataSetChanged();
         meApplication.hideProgress();
 
     }
 
+    /**
+     * Failed to get pets
+     */
     @Override
     public void onPetsGetListFailed() {
         meApplication.hideProgress();
@@ -294,6 +316,10 @@ public class PetsListFragment extends Fragment implements
 
     }
 
+    /**
+     * Exception occured when get pets
+     * @param t
+     */
     @Override
     public void onRestCallError(Throwable t) {
         meApplication.hideProgress();
@@ -301,22 +327,30 @@ public class PetsListFragment extends Fragment implements
 
     }
 
+    /**
+     * When clicked on wish list button.
+     * Save the pet in wish list.
+     * @param pet
+     */
     @Override
     public void onWishListClicked(Pet pet) {
         pet.setIsWishInList(!pet.isInWishlist());
 
+        // If the users like the pets, add it to wish list
         if(pet.isInWishlist()){
             PetAdd2WishListTask petAdd2WishListTask =
                     new PetAdd2WishListTask(meApplication.getCurrentUser(),pet.getId());
             petAdd2WishListTask.add2WishList();
         }else{
 
+            // Else, If we are in wish list mode, should also delete the pet from the list
             if(petListMode.equals(Constants.PetsListMode.WishList)){
                 mPetsList.remove(pet);
                 mPetsListView.invalidate();
                 petsListAdapter.notifyDataSetChanged();
             }
 
+            // Delete the pet from wish list.
             PetDeleteFromWishListTask petDeleteFromWishListTask =
                     new PetDeleteFromWishListTask(meApplication.getCurrentUser(),pet.getId());
             petDeleteFromWishListTask.deleteFromWishList();

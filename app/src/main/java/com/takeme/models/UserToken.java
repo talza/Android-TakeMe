@@ -2,6 +2,7 @@ package com.takeme.models;
 
 /**
  * Created by tzamir on 10/10/2015.
+ * This model represent model of token of user.
  */
 public class UserToken {
     private Long id;

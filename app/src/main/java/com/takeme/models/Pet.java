@@ -4,6 +4,7 @@ import com.takeme.services.TakeMeUtil;
 
 /**
  * Created by tzamir on 9/13/2015.
+ * This class represent a model of pet ad
  */
 public class Pet
 {

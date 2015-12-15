@@ -4,6 +4,7 @@ import com.takeme.models.User;
 
 /**
  * Created by tzamir on 9/24/2015.
+ * This class represent model of Login.
  */
 public class UserLogin {
     private String email;

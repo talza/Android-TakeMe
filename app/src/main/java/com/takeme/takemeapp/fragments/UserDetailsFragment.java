@@ -26,12 +26,7 @@ import com.takeme.takemeapp.activities.StartTakeMeActivity;
 
 
 /**
- * A simple {@link Fragment} subclass.
- * Activities that contain this fragment must implement the
- * {@link PetDetailsFragment.OnFragmentInteractionListener} interface
- * to handle interaction events.
- * Use the {@link PetDetailsFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * This class represent Fragment of user details
  */
 public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask.UserGetDetailsResponse, UserUpdateTask.UserUpdateResponse{
 
@@ -50,7 +45,6 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
      *
      * @return A new instance of fragment PetDetailsFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static UserDetailsFragment newInstance() {
         UserDetailsFragment fragment = new UserDetailsFragment();
         Bundle args = new Bundle();
@@ -99,7 +93,6 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -144,6 +137,7 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        // If the user press on edit , change the fields for editable
         if (id == R.id.edit_user_action) {
             this.mMenu.findItem(R.id.edit_user_action).setVisible(false);
             this.mMenu.findItem(R.id.save_user_action).setVisible(true);
@@ -163,6 +157,7 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
 
             return true;
         }
+        // If the user press on save update the user data
         else if (id == R.id.save_user_action)
         {
             updateUser();
@@ -228,13 +223,17 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
      * >Communicating with Other Fragments</a> for more information.
      */
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
     }
 
+    /**
+     * Update the user data
+     */
     private void updateUser()
     {
         mApp.showProgress(this.getActivity());
+
+        // Update the user data.
         UserUpdateTask userUpdateTask =
                 new UserUpdateTask(this.mApp.getCurrentUser(),
                                    this.mFirstNameEditText.getText().toString(),
@@ -244,6 +243,10 @@ public class UserDetailsFragment extends Fragment implements  UserGetDetailsTask
         userUpdateTask.updateUser();
     }
 
+    /**
+     * Sign out from the application
+     * @param v
+     */
     private void signOut(View v)
     {
         mApp.setCurrentUser(null);

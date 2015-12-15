@@ -2,6 +2,7 @@ package com.takeme.models;
 
 /**
  * Created by tzamir on 11/20/2015.
+ * This Class represent model of add pet to wish list
  */
 public class PetAdd2Wishlist {
 

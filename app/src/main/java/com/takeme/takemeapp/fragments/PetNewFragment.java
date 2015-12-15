@@ -35,6 +35,9 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * This class represent fragment of Save new/update pets
+ */
 public class PetNewFragment extends Fragment implements
         View.OnClickListener,
         AwsS3Provider.FileUploadCallBack,
@@ -64,6 +67,18 @@ public class PetNewFragment extends Fragment implements
     private TakeMeApplication meApplication;
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
+    /**
+     * Create new instance of update pets with parametes
+     * @param petId -   pet id if exists
+     * @param petName - pet name
+     * @param petType - pet type
+     * @param petSize - pet size
+     * @param petAge -  pet age
+     * @param petGender - pet gender
+     * @param petDesc - pet desciption
+     * @param petPicUrl - pet picture url
+     * @return
+     */
     public static PetNewFragment newInstance(Long petId,
                                              String petName,
                                              int petType,
@@ -151,6 +166,7 @@ public class PetNewFragment extends Fragment implements
 
         getActivity().getActionBar().setTitle("Add Pet");
 
+        // For update pet mode , put the values of pet in the fields
         if(mPetUpdateMode != null && mPetUpdateMode.equals(Constants.PetUpdateMode.UPDATE)) {
             existingPic = true;
             petNameEditText.setText(getArguments().getString(Constants.PET_UPDATE_NAME));
@@ -177,6 +193,7 @@ public class PetNewFragment extends Fragment implements
     {
         if(!mNavigationDrawerFragment.isDrawerOpen())
         {
+            // Set the title according to pet update/create mode.
             if(mPetUpdateMode.equals(Constants.PetUpdateMode.CREATE)) {
                 getActivity().getActionBar().setTitle("Create Ad");
             }else{
@@ -276,6 +293,7 @@ public class PetNewFragment extends Fragment implements
         spGender.setAdapter(animalAdapter);
     }
 
+    // Open camera
     private void startCamera(){
 
         dispatchTakePictureIntent();
@@ -288,12 +306,14 @@ public class PetNewFragment extends Fragment implements
 
             pictureFile = null;
             try {
+                // Create new file
                 pictureFile = createImageFile();
             } catch (IOException ex) {
 
                 handleError(ex.getMessage());
             }
 
+            // Take a picture from camera
             takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT,
                     Uri.fromFile(pictureFile));
 
@@ -301,6 +321,10 @@ public class PetNewFragment extends Fragment implements
         }
     }
 
+    /**
+     * if the user take a picture, display it in the screen
+     *
+     */
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
@@ -317,10 +341,12 @@ public class PetNewFragment extends Fragment implements
                     .into(petPicture);
 
             pictureTaken = true;
+            existingPic = false;
         }
 
     }
 
+    // Create new file
     private File createImageFile() throws IOException {
 
         // Create an image unique file name
@@ -339,37 +365,47 @@ public class PetNewFragment extends Fragment implements
         return image;
     }
 
-
-
+    // if error occured
     private void handleError(String errorMessage){
         meApplication.hideProgress();
         Toast.makeText(getActivity(), errorMessage, Toast.LENGTH_LONG).show();
     }
 
+
     @Override
     public void onClick(View view) {
 
+        // if the user click on picture, then start the camera
         if (view.getId() == R.id.picture)
             startCamera();
+        // if the user click on save, the save the pet.
         else if (view.getId() == R.id.save_new_ad)
 
             //Check data is valid
             if (validateDetails())
+                // save the pet
                 saveNewAd();
     }
 
+    /**
+     * Check input valitation
+     * @return true if the validation ok.
+     */
     private boolean validateDetails(){
 
+        // Check if the pet name is not empty
         if (petNameEditText.getText().toString().isEmpty()){
             petNameEditText.setError(getString(R.string.msg_error_pet_name));
             return false;
         }
 
+        // Check if the pet have description
         if (petDescEditText.getText().toString().isEmpty()){
             petDescEditText.setError(getString(R.string.msg_error_pet_description));
             return false;
         }
 
+        // Check if the user take a picture
         if (!pictureTaken && !existingPic){
 
             Toast.makeText(getActivity(), getActivity().getString(R.string.msg_error_pet_picture), Toast.LENGTH_LONG).show();
@@ -379,6 +415,9 @@ public class PetNewFragment extends Fragment implements
         return true;
     }
 
+    /**
+     * Save the pet data
+     */
     private void saveNewAd(){
 
         //Show progress bar until ad saved.
@@ -407,7 +446,7 @@ public class PetNewFragment extends Fragment implements
     @Override
     public void onUploadToS3Completed(String uploadResult) {
 
-        //After image uploaded, create the ad
+        //After image uploaded to s3 , save the pet
         Pet pet = new Pet();
         pet.setPetName(petNameEditText.getText().toString());
         pet.setPetType(spType.getSelectedItemPosition() + 1);
@@ -417,6 +456,7 @@ public class PetNewFragment extends Fragment implements
         pet.setPetDescription(petDescEditText.getText().toString());
         pet.setPetPhotoUrl(uploadResult);
 
+        // Create or Update the pet
         if (mPetUpdateMode.equals(Constants.PetUpdateMode.CREATE)) {
             PetCreateAdTask petCreateAdTask = new PetCreateAdTask(meApplication.getCurrentUser(), pet, this);
             petCreateAdTask.createPetAd();

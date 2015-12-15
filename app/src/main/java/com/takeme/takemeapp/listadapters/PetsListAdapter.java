@@ -21,6 +21,7 @@ import java.util.List;
 
 /**
  * Created by tzamir on 9/13/2015.
+ * This Class represent list adapter of pets list
  */
 public class PetsListAdapter extends ArrayAdapter<Pet>
 {

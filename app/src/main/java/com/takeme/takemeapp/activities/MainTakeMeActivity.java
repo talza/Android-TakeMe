@@ -5,13 +5,11 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
 import com.takeme.services.Constants;
 import com.takeme.takemeapp.R;
@@ -22,6 +20,9 @@ import com.takeme.takemeapp.fragments.PetsListFragment;
 import com.takeme.takemeapp.fragments.PetsSearchFragment;
 import com.takeme.takemeapp.fragments.UserDetailsFragment;
 
+/**
+ * This class represent the main activity of the TakMe application
+ */
 public class MainTakeMeActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks,
         PetsListFragment.OnFragmentInteractionListener,

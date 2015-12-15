@@ -1,6 +1,5 @@
 package com.takeme.services;
 
-import com.squareup.okhttp.OkHttpClient;
 
 import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;

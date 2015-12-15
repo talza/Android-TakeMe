@@ -5,20 +5,17 @@ import android.content.Intent;
 
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
-import com.facebook.AccessTokenTracker;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
 import com.facebook.FacebookSdk;
 import com.facebook.GraphRequest;
-import com.facebook.GraphRequestAsyncTask;
 import com.facebook.GraphResponse;
 import com.facebook.appevents.AppEventsLogger;
 import com.facebook.login.LoginManager;
@@ -35,6 +32,11 @@ import com.takeme.takemeapp.TakeMeApplication;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
+/**
+ * This class represent the Start activity of TakeMe application
+ */
 public class StartTakeMeActivity extends Activity implements
         UserSignViaFacebookTask.UserSignViaFacebookResponse,
         UserGetByFacebookTask.UserGetByFacebookResponse,
@@ -54,6 +56,7 @@ public class StartTakeMeActivity extends Activity implements
 
         this.mApp =  (TakeMeApplication)getApplication();
 
+        // Set Facebook login button
         FacebookSdk.sdkInitialize(getApplicationContext());
         callbackManager = CallbackManager.Factory.create();
 
@@ -61,46 +64,50 @@ public class StartTakeMeActivity extends Activity implements
 
         final LoginButton loginButton = (LoginButton) findViewById(R.id.login_button);
         loginButton.setText("Facebook");
-        loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
+        loginButton.setReadPermissions(Arrays.asList("public_profile, email"));
+                // Set on Click Facebook button
+                loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
 
-                // App code
-                GraphRequest graphRequestAsyncTask =
-                        GraphRequest.newMeRequest(loginResult.getAccessToken(),
-                                new GraphRequest.GraphJSONObjectCallback() {
+                        // Tried to get user facebook data
+                        GraphRequest graphRequestAsyncTask =
+                                GraphRequest.newMeRequest(loginResult.getAccessToken(),
+                                        new GraphRequest.GraphJSONObjectCallback() {
 
-                                    @Override
-                                    public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
-                                        signWithFacebook(jsonObject);
-                                    }
-                                }
-                        );
-                Bundle parameters = new Bundle();
-                parameters.putString("fields", "id, first_name, last_name, email");
-                graphRequestAsyncTask.setParameters(parameters);
-                graphRequestAsyncTask.executeAsync();
-            }
+                                            @Override
+                                            public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
+                                                signWithFacebook(jsonObject);
+                                            }
+                                        }
+                                );
 
-            @Override
-            public void onCancel() {
+                        // Get the first name , last name , email of user
+                        Bundle parameters = new Bundle();
+                        parameters.putString("fields", "id, email, first_name, last_name");
+                        graphRequestAsyncTask.setParameters(parameters);
+                        graphRequestAsyncTask.executeAsync();
+                    }
 
-            }
+                    @Override
+                    public void onCancel() {
 
-            @Override
-            public void onError(FacebookException exception) {
-                // App code
+                    }
 
-                Toast.makeText(StartTakeMeActivity.this, "Can't connected via Facebook", Toast.LENGTH_SHORT).show();
-            }
-        });
+                    @Override
+                    public void onError(FacebookException exception) {
+                        Toast.makeText(StartTakeMeActivity.this, "Can't connected via Facebook", Toast.LENGTH_SHORT).show();
+                    }
+                });
 
+        // If the application have user go to main activity
         if(mApp.getCurrentUser() != null){
             Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
             startActivity(intentToMain);
             finish();
         }
 
+        // Tried to login via facebook
         signViaFacebookToken(AccessToken.getCurrentAccessToken());
 
     }
@@ -144,12 +151,20 @@ public class StartTakeMeActivity extends Activity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Go to sign in via Email
+     * @param view
+     */
     public void onSignIn(View view)
     {
         Intent intentToSignIn = new Intent(this, SignInTakeMeActivity.class);
         startActivity(intentToSignIn);
     }
 
+    /**
+     * Go to sign up via Email
+     * @param view
+     */
     public void onSignUp(View view)
     {
         Intent intent = new Intent(this, SignUpTakeMeActivity.class);
@@ -163,11 +178,16 @@ public class StartTakeMeActivity extends Activity implements
         callbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * Sign Up via Facebook
+     * @param jsonObject - Json data from facebook
+     */
     private void signWithFacebook(JSONObject jsonObject)
     {
         try {
             mApp.showProgress(this);
 
+            // Get email first & last name
             this.email = jsonObject.getString("email");
             this.firstName = jsonObject.getString("first_name");
             this.lastName = jsonObject.getString("last_name");
@@ -178,10 +198,16 @@ public class StartTakeMeActivity extends Activity implements
         } catch (JSONException e) {
             mApp.hideProgress();
             Toast.makeText(StartTakeMeActivity.this, "Can't connected via Facebook", Toast.LENGTH_SHORT).show();
+            LoginManager.getInstance().logOut();
         }
 
     }
 
+    /**
+     * If the user already connect to application via facebook
+     * tried to login to take me application via facebook token.
+     * @param currentAccessToken
+     */
     private void signViaFacebookToken(AccessToken currentAccessToken) {
 
         if (currentAccessToken != null) {
@@ -192,17 +218,27 @@ public class StartTakeMeActivity extends Activity implements
         }
     }
 
+    /**
+     * Success to register to application via facebook
+     * @param id
+     */
     @Override
     public void onRegisterSuccess(UserToken id) {
         mApp.hideProgress();
+
+        // Set the current user
         this.mApp.setCurrentUser(id.getId());
         Toast.makeText(StartTakeMeActivity.this, "Connected via Facebook", Toast.LENGTH_SHORT).show();
 
+        // Go to main activity
         Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
         startActivity(intentToMain);
         finish();
     }
 
+    /**
+     * Failed to connect via facebook
+     */
     @Override
     public void onRegisterFailed() {
         mApp.hideProgress();
@@ -210,16 +246,27 @@ public class StartTakeMeActivity extends Activity implements
         LoginManager.getInstance().logOut();
     }
 
+    /**
+     * Success to login via exist facebook user token
+     * @param user
+     */
     @Override
     public void onUserGetByFacebookSuccess(UserToken user) {
         mApp.hideProgress();
+
+        // Set the current user
         this.mApp.setCurrentUser(user.getId());
+
+        // Go to main activity
         Intent intentToMain = new Intent(StartTakeMeActivity.this, MainTakeMeActivity.class);
         startActivity(intentToMain);
 
         finish();
     }
 
+    /**
+     * Failed to sign in via exist facebook user token
+     */
     @Override
     public void onUserGetByFacebookFailed() {
         mApp.hideProgress();
@@ -227,6 +274,10 @@ public class StartTakeMeActivity extends Activity implements
         LoginManager.getInstance().logOut();
     }
 
+    /**
+     * Connection failed
+     * @param t
+     */
     @Override
     public void onRestCallError(Throwable t) {
         mApp.hideProgress();
@@ -235,9 +286,14 @@ public class StartTakeMeActivity extends Activity implements
 
     }
 
+    /**
+     * Sucees to get registration id
+     * @param regId - registration id
+     */
     @Override
     public void onGetRegistrationDeviceId(String regId) {
 
+        // Sign up via facebook
         UserSignViaFacebookTask userSignViaFacebookTask =
                 new UserSignViaFacebookTask(
                         this.email,

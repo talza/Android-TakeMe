@@ -2,10 +2,6 @@ package com.takeme.takemeapp.fragments;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.app.Fragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -20,16 +16,11 @@ import com.edmodo.rangebar.RangeBar;
 import com.takeme.services.Constants;
 import com.takeme.takemeapp.R;
 
+/**
+ * This class represnt Fragments of search of pets
+ */
 public class PetsSearchFragment extends DialogFragment implements RangeBar.OnRangeBarChangeListener{
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     private Spinner mAnimalSpinner;
     private Spinner mGenderSpinner;
@@ -55,8 +46,6 @@ public class PetsSearchFragment extends DialogFragment implements RangeBar.OnRan
     public static PetsSearchFragment newInstance(String param1, String param2) {
         PetsSearchFragment fragment = new PetsSearchFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
 
         return fragment;
@@ -68,10 +57,6 @@ public class PetsSearchFragment extends DialogFragment implements RangeBar.OnRan
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override

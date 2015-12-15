@@ -18,6 +18,8 @@ import com.takeme.takemeapp.activities.MainTakeMeActivity;
 
 /**
  * Created by tzamir on 11/30/2015.
+ *
+ * This class represent handler that get message from GCM and raise it via notification
  */
 public class GcmMessageHandler extends IntentService {
 
@@ -29,14 +31,20 @@ public class GcmMessageHandler extends IntentService {
 
     @Override
     public void onCreate() {
-        // TODO Auto-generated method stub
         super.onCreate();
 
     }
+
+    /**
+     * Get gcm message and raise notification to user
+     * @param intent
+     */
     @Override
     protected void onHandleIntent(Intent intent) {
+
         Bundle extras = intent.getExtras();
         GoogleCloudMessaging gcm = GoogleCloudMessaging.getInstance(this);
+
         // The getMessageType() intent parameter must be the intent you received
         // in your BroadcastReceiver.
         String messageType = gcm.getMessageType(intent);

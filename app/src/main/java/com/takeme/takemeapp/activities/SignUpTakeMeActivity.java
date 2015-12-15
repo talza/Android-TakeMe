@@ -16,6 +16,9 @@ import com.takeme.services.UserSignUpTask;
 import com.takeme.takemeapp.R;
 import com.takeme.takemeapp.TakeMeApplication;
 
+/**
+ * This class represent activity of sign up to application
+ */
 public class SignUpTakeMeActivity extends Activity implements
         UserSignUpTask.UserSignUpResponse,
         RegistrationDeviceUtil.GetRegistrationDeviceIdCallBack{
@@ -26,11 +29,13 @@ public class SignUpTakeMeActivity extends Activity implements
     private EditText phoneNumberEditText;
     private EditText emailEditText;
     private EditText passwordEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up_take_me);
         this.mApp =  (TakeMeApplication)getApplication();
+
 
         firstNameEditText   = (EditText)findViewById(R.id.etFirstName);
         lastNameEditText    = (EditText)findViewById(R.id.etLastName);
@@ -57,9 +62,14 @@ public class SignUpTakeMeActivity extends Activity implements
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Sign up to application
+     * @param view
+     */
     public void onSignUp(View view)
     {
 
+        // Check if the email is valid
         if (!isValidEmail(emailEditText.getText().toString()))
         {
             emailEditText.setError(getString(R.string.msg_invalid_email_format));
@@ -81,6 +91,10 @@ public class SignUpTakeMeActivity extends Activity implements
 
     }
 
+    /**
+     * Go to sign in activity
+     * @param view
+     */
     public void onSignIn(View view)
     {
         Intent intentToSignIn = new Intent(this, SignInTakeMeActivity.class);
@@ -89,6 +103,12 @@ public class SignUpTakeMeActivity extends Activity implements
         finish();
     }
 
+    /**
+     * Check password in the format of at least 1 uppercase letter, 1 lowercase letter,
+     * at least 1 digit , at least 8 letters.
+     * @param target
+     * @return
+     */
     private  boolean isValidPassword(String target)
     {
         /*
@@ -107,6 +127,11 @@ public class SignUpTakeMeActivity extends Activity implements
         return  !TextUtils.isEmpty(target) && target.matches(pattern);
     }
 
+    /**
+     * Check email format validation
+     * @param target
+     * @return
+     */
     private boolean isValidEmail(CharSequence target) {
 
         return !TextUtils.isEmpty(target) &&
@@ -114,34 +139,52 @@ public class SignUpTakeMeActivity extends Activity implements
 
     }
 
+    /**
+     * Success to sign up
+     * @param id
+     */
     @Override
     public void onRegisterSuccess(UserToken id) {
         mApp.hideProgress();
 
+        // Save the current user
         this.mApp.setCurrentUser(id.getId());
         Toast.makeText(SignUpTakeMeActivity.this, "Sign up succeed", Toast.LENGTH_SHORT).show();
 
+        // Go to main activity
         Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
         startActivity(intentToMain);
 
         finish();
     }
 
+    /**
+     * Failed to sign up
+     */
     @Override
     public void onRegisterFailed() {
         mApp.hideProgress();
         Toast.makeText(SignUpTakeMeActivity.this, "Sign up failed", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Error occurred when tried to sign up
+     * @param t
+     */
     @Override
     public void onRestCallError(Throwable t) {
         mApp.hideProgress();
         Toast.makeText(SignUpTakeMeActivity.this, "Connection failed", Toast.LENGTH_SHORT).show();
     }
 
+    /**
+     * Success to get the registration device id
+     * @param regId - registration device id
+     */
     @Override
     public void onGetRegistrationDeviceId(String regId) {
 
+        // Sign up to application
         UserSignUpTask userSignUpTask =
                 new UserSignUpTask(
                         emailEditText.getText().toString(),

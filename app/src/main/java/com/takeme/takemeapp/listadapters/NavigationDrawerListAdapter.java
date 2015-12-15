@@ -13,6 +13,7 @@ import com.takeme.takemeapp.R;
 
 /**
  * Created by tal Zamir on 08/09/2015.
+ * This class represent list adapter of navigation drawer.
  */
 public class NavigationDrawerListAdapter extends ArrayAdapter<String> {
 
