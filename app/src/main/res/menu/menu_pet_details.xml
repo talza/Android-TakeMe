@@ -2,7 +2,7 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.eitan.petsi.data." >
+    tools:context="com.takeme.takemeapp.fragments.PetDetailsFragment" >
 
     <item android:id="@+id/edit_pet_action"
         android:title=""

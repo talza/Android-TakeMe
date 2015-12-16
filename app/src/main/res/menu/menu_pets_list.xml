@@ -2,7 +2,7 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.eitan.petsi.data." >
+    tools:context="com.takeme.takemeapp.fragments.PetsListFragment" >
 
     <item android:id="@+id/search_pets_action"
         android:title=""
