@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.takeme.takemeapp.fragments.UserDetailsFragment" >
 
+
     <item android:id="@+id/edit_user_action"
         android:title=""
         android:icon="@android:drawable/ic_menu_edit"
