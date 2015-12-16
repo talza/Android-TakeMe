@@ -11,6 +11,8 @@ import java.io.IOException;
 
 /**
  * Created by tzamir on 11/30/2015.
+ *
+ * This class is singleton that represent util of Registration device
  */
 public class RegistrationDeviceUtil {
 
@@ -18,6 +20,10 @@ public class RegistrationDeviceUtil {
     private String regid;
     private Context context;
 
+    /**
+     * Initialize the class with context
+     * @param context
+     */
     public synchronized void init(Context context){
         this.context = context;
         if (gcm == null) {
@@ -25,7 +31,10 @@ public class RegistrationDeviceUtil {
         }
     }
 
-
+    /**
+     * Get registration device id with callback
+     * @param getRegistrationDeviceIdCallBack
+     */
     public void getRegId(GetRegistrationDeviceIdCallBack getRegistrationDeviceIdCallBack){
         if (regid == null) {
             synchronized (RegistrationDeviceUtil.class) {

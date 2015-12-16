@@ -8,12 +8,17 @@ import java.util.ArrayList;
 
 /**
  * Created by tzamir on 11/7/2015.
+ * This class is singleton that represent TakeMe utilities
  */
 public class TakeMeUtil {
     ArrayList<String> lsSize;
     ArrayList<String> lsGender;
     ArrayList<String> lsType;
 
+    /**
+     * Initialize the class with the context
+     * @param context
+     */
     public synchronized void init(Context context) {
 
         this.lsSize = new ArrayList<>();
@@ -38,14 +43,29 @@ public class TakeMeUtil {
 
     }
 
+    /**
+     * Get size text by index
+     * @param index
+     * @return
+     */
     public String getSizeByIndex(int index){
         return this.lsSize.get(index);
     }
 
+    /**
+     * Get Type text by index
+     * @param index
+     * @return
+     */
     public String getTypeByIndex(int index){
         return this.lsType.get(index);
     }
 
+    /**
+     * Get Gender text by index
+     * @param index
+     * @return
+     */
     public String getGenderByIndex(int index){
         return this.lsGender.get(index);
     }

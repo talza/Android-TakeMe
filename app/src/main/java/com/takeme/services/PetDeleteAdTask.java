@@ -1,7 +1,5 @@
 package com.takeme.services;
 
-import com.takeme.models.Pet;
-
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;

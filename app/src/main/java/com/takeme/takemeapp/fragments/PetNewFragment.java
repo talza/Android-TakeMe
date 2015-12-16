@@ -170,11 +170,11 @@ public class PetNewFragment extends Fragment implements
         if(mPetUpdateMode != null && mPetUpdateMode.equals(Constants.PetUpdateMode.UPDATE)) {
             existingPic = true;
             petNameEditText.setText(getArguments().getString(Constants.PET_UPDATE_NAME));
-            spType.setSelection(getArguments().getInt(Constants.PET_UPDATE_TYPE));
-            spSize.setSelection(getArguments().getInt(Constants.PET_UPDATE_SIZE));
-            spAge.setSelection(getArguments().getInt(Constants.PET_UPDATE_AGE));
-            spGender.setSelection(getArguments().getInt(Constants.PET_UPDATE_GENDER));
-            petDescEditText.setText(getArguments().getString(Constants.PET_UPDATE_DESC));
+            spType.setSelection(getArguments().getInt(Constants.PET_UPDATE_TYPE) - 1);
+            spSize.setSelection(getArguments().getInt(Constants.PET_UPDATE_SIZE) - 1);
+            spAge.setSelection(getArguments().getInt(Constants.PET_UPDATE_AGE) - 1);
+            spGender.setSelection(getArguments().getInt(Constants.PET_UPDATE_GENDER) - 1);
+            petDescEditText.setText(getArguments().getString(Constants.PET_UPDATE_DESC) );
             mCurrentPhotoPath = getArguments().getString(Constants.PET_UPDATE_PIC_URL);
 
             Picasso.with(getActivity().getApplicationContext()).load(mCurrentPhotoPath)

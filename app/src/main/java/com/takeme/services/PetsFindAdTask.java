@@ -1,16 +1,11 @@
 package com.takeme.services;
 
-import android.text.TextUtils;
 
 import com.takeme.models.Pet;
-import com.takeme.models.User;
 
-import org.apache.commons.codec.binary.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import retrofit.Call;
 import retrofit.Callback;

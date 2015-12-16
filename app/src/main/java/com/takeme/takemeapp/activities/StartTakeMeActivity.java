@@ -105,10 +105,11 @@ public class StartTakeMeActivity extends Activity implements
             Intent intentToMain = new Intent(this, MainTakeMeActivity.class);
             startActivity(intentToMain);
             finish();
-        }
+        }else {
 
-        // Tried to login via facebook
-        signViaFacebookToken(AccessToken.getCurrentAccessToken());
+            // Tried to login via facebook
+            signViaFacebookToken(AccessToken.getCurrentAccessToken());
+        }
 
     }
 

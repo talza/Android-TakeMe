@@ -2,8 +2,6 @@ package com.takeme.services;
 
 import com.takeme.models.Pet;
 
-import java.util.HashMap;
-import java.util.List;
 
 import retrofit.Call;
 import retrofit.Callback;

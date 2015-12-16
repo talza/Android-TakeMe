@@ -1,6 +1,6 @@
 package com.takeme.services;
 
-import com.takeme.models.Pet;
+
 import com.takeme.models.PetAdd2Wishlist;
 
 import retrofit.Call;
